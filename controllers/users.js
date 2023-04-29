@@ -1,7 +1,8 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt");
-const User = require("../models/User")
+const User = require("../models/User");
+const { createJWTToken } = require("../utills/util");
 const router = express.Router()
 
 router.post("/add",async (req,res)=> {
@@ -30,13 +31,16 @@ router.post("/signin",async (req,res) => {
   try {
     if(!req.body.email) throw new Error("Email is required");
     if(!req.body.password) throw new Error("password is required")
-    const user = await User.findOne({email : req.body.email})
+    let user = await User.findOne({email : req.body.email})
     if(!user) throw new Error("Email or password is incorrect")
     if(!(await bcrypt.compare(req.body.password , user.password)))
       throw new Error('Email or password is incorrect')
-
-      res.json({user})
+      
+      user = user.toObject()
       delete user.password
+
+      const token = await createJWTToken(user,6)
+      res.json({user,token})
 
   } catch (error) {
     res.status(400).json({error : error.message})
