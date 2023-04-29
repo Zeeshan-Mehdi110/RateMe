@@ -20,7 +20,7 @@ const varifyUser = async (req,res,next) => {
 
     const user = await User.findById(decoded_token.uid)
     if(!user) throw new Error("invalid request")
-    req.user;
+    req.user = user;
     next()
 
   } catch (error) {
