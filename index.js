@@ -3,11 +3,13 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const userRoutes = require("./controllers/users")
+const departmentRoutes = require("./controllers/department")
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 app.use("/api/users",userRoutes)
+app.use("/api/departments",departmentRoutes)
 
 
 
