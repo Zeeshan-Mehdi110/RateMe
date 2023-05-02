@@ -49,8 +49,6 @@ router.post("/edit", async (req, res) => {
     const department = await Department.findById(req.body.id)
     if (!department) throw new Error("Department does not exists")
     // check if this is the user that has access to its own department
-    // console.log(req.user._id.toString())
-    // console.log( department.user_id.toString())
     if(req.user._id.toString() !== department.user_id.toString() )
       throw new Error("invalid request")
     
@@ -85,9 +83,6 @@ router.delete("/delete", async (req, res) => {
     if (!department) throw new Error("Department does not exists")
 
        // check if this is the user that has access to its own department
-    console.log(req.user._id.toString())
-    console.log( department.user_id.toString())
-    // department.user_id = "6450f92183468bb2af1bcd5c"
     if(req.user._id.toString() !== department.user_id.toString() )
       throw new Error("invalid request")
 
