@@ -1,0 +1,10 @@
+{
+"name" : "Employee 1",
+"email" : "employee1@gmail.com",
+"phone_number" : "786766",
+"id_card" : "3435",
+"profile_picture" : "Employee 1",
+"department_id" : "Employee 1",
+"created_on" : "2023-04-04",
+"modified_on" : "2023-04-04"
+}

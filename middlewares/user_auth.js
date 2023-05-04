@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User")
 require("dotenv").config()
 
-const varifyUser = async (req,res,next) => {
+const verifyUser = async (req,res,next) => {
   try {
     if(!req.headers.authorization) {
       throw new Error("invalid request")
@@ -12,7 +12,7 @@ const varifyUser = async (req,res,next) => {
     throw new Error("invalid request")
 
     const decoded_token = await new Promise((resolve,reject)=> {
-      jwt.verify(token,process.env.JWT_ENSCRYPTION_KEY,async (err,decoded)=> {
+      jwt.verify(token,process.env.JWT_ENCRYPTION_KEY,async (err,decoded)=> {
         if(err) reject(new Error("invalid request"))
         else resolve(decoded)
       })
@@ -29,5 +29,5 @@ const varifyUser = async (req,res,next) => {
 }
 
 module.exports = {
-  varifyUser,
+  verifyUser,
 }
