@@ -2,11 +2,11 @@ const express = require("express")
 const mongoose = require("mongoose")
 const Department = require("../models/Department");
 const User = require("../models/User");
-const { varifyUser } = require("../middlewares/user_auth");
-const { userTypes } = require("../utills/util");
+const { verifyUser } = require("../middlewares/user_auth");
+const { userTypes } = require("../utils/util");
 const router = express.Router()
 
-router.use(varifyUser)
+router.use(verifyUser)
 
 router.post("/add", async (req, res) => {
   try {
@@ -41,18 +41,16 @@ router.post("/add", async (req, res) => {
 
 router.post("/edit", async (req, res) => {
   try {
-
     if (!req.body.id) throw new Error("Department id is required")
     if (!mongoose.isValidObjectId(req.body.id)) throw new Error("Department id is invalid")
-
     
     const department = await Department.findById(req.body.id)
     if (!department) throw new Error("Department does not exists")
+    console.log(req.user.type)
     // check if this is the user that has access to its own department
-    if(req.user._id.toString() !== department.user_id.toString() )
+    if(req.user.type !== userTypes.SUPER_ADMIN && req.user._id.toString() !== department.user_id.toString() )
+    // both conditions need to be true in order for the error to be thrown with the message "invalid request".
       throw new Error("invalid request")
-    
-    // if (req.user._id.toString() !== req.body.id) throw new Error("invalid request")
 
     const {
       department_name,
@@ -76,16 +74,18 @@ router.post("/edit", async (req, res) => {
 
 router.delete("/delete", async (req, res) => {
   try {
-    if (!req.body.id) throw new Error("User id is required")
-    if (!mongoose.isValidObjectId(req.body.id)) throw new Error("user id is invalid")
+    if (!req.body.id) throw new Error("Department id is required")
+    if (!mongoose.isValidObjectId(req.body.id)) throw new Error("Department id is invalid")
+      // only super admin can delete a department
+    if(req.user.type !== userTypes.SUPER_ADMIN)
+    throw new Error("invalid request")
 
     const department = await Department.findById(req.body.id)
     if (!department) throw new Error("Department does not exists")
-
        // check if this is the user that has access to its own department
-    if(req.user._id.toString() !== department.user_id.toString() )
+        console.log(req.user._id.toString())
+    if(req.user._id.toString() !== "department.user_id.toString()" )
       throw new Error("invalid request")
-
     await Department.findOneAndDelete(req.body.id)
     res.json({ success: true })
   } catch (error) {
@@ -96,8 +96,10 @@ router.delete("/delete", async (req, res) => {
 
 router.get("/",async (req,res) => {
   try {
+    // only super admin can see department
     if(req.user.type !== userTypes.SUPER_ADMIN )
       throw new Error("invalid request")
+      
     const departments = await Department.find()
     res.json({departments})
   } catch (error) {

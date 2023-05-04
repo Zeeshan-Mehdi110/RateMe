@@ -1,4 +1,4 @@
-# rateme
+# RateMe
 # Feedback System for Government Departments
 
 This project is a feedback system that allows local users to give feedback on the services provided by government departments. The feedback is collected by scanning a QR code that is placed at the department's premises, and the results are stored in a database for analysis.

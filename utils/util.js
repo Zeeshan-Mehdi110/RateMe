@@ -19,15 +19,15 @@ const createJWTToken = (user, expiryINHours = 6) => {
     },
   }
 
-  // promise is used for asyn tasks
+  // promise is used for async tasks
 
-  let mypromise = new Promise((resolve, reject) => {
-    jwt.sign(payload, process.env.JWT_ENSCRYPTION_KEY, (err, token) => {
+  let myPromise = new Promise((resolve, reject) => {
+    jwt.sign(payload, process.env.JWT_ENCRYPTION_KEY, (err, token) => {
       if (err) reject(err)
       else resolve(token)
     })
   })
-  return mypromise
+  return myPromise
 }
 
 module.exports = {

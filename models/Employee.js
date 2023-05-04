@@ -1,34 +1,27 @@
 const mongoose = require("mongoose")
 const moment = require("moment/moment")
 
-const userSchema = new mongoose.Schema({
+const employeeSchema = new mongoose.Schema({
   name : {
     type : String,
-    required : true,
   },
   email : {
     type : String,
-    required : true,
   },
   phone_number : {
     type : Number,
-    required : true,
   },
-  password : {
+  id_card : {
     type : String,
-    required : true,
-    maxLength : 100,
   },
-  password_reset_code : {
+  designation : {
     type : String,
+  },
+  rating : {
+    type : Number,
   },
   profile_picture : {
     type : String,
-    required : true,
-  },
-  type : {
-    type : Number,
-    required : true,
   },
   department_id : {
     type : mongoose.Schema.Types.ObjectId
@@ -44,6 +37,6 @@ const userSchema = new mongoose.Schema({
 })
 
 
-const User = mongoose.model("users",userSchema)
+const Employee = mongoose.model("employees",employeeSchema)
 
-module.exports = User
+module.exports = Employee
