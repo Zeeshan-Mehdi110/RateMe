@@ -2,10 +2,10 @@ const mongoose = require("mongoose")
 const moment = require("moment/moment")
 
 const departmentSchema = new mongoose.Schema({
-  department_name : {
+  departmentName : {
     type : String,
   },
-  department_email : {
+  departmentEmail : {
     type : String,
   },
   logo : {
@@ -17,23 +17,23 @@ const departmentSchema = new mongoose.Schema({
   rating : {
     type : Number
   },
-  user_id : {
+  userId : {
     type : mongoose.Schema.Types.ObjectId
   },
-  phone_number : {
+  phoneNumber : {
     type : Number,
   },
   active : {
     type : Number
   },
-  department_id : {
+  departmentId : {
     type : mongoose.Schema.Types.ObjectId
   },
-  created_on : {
+  createdOn : {
     type : Date,
     default : moment().format("YYYY-MM-DD")
   },
-  modified_on : {
+  modifiedOn : {
     type : Date,
     default : moment().format("YYYY-MM-DD")
   },
@@ -41,8 +41,8 @@ const departmentSchema = new mongoose.Schema({
 departmentSchema.set('toJSON', {
   getters: true,
   transform: (doc, ret, options) => {
-    ret.created_on = moment(ret.created_on).format('YYYY-MM-DD');
-    ret.modified_on = moment(ret.modified_on).format('YYYY-MM-DD');
+    ret.createdOn = moment(ret.createdOn).format('YYYY-MM-DD');
+    ret.modifiedOn = moment(ret.modifiedOn).format('YYYY-MM-DD');
     return ret;
   }
 });

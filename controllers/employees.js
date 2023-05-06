@@ -1,13 +1,13 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const Employee = require("../models/Employee");
-const User = require("../models/User");
-const { verifyUser } = require("../middlewares/user_auth");
+const { verifyUser } = require("../middlewares/auth");
 const { userTypes } = require("../utils/util");
 const Department = require("../models/Department");
+const Rating = require("../models/Rating");
 const router = express.Router()
 
-router.use(verifyUser)
+router.use(["/add","/edit","/delete","/details/:employeeId","/search"],verifyUser)
 
 router.post("/add", async (req, res) => {
   try {
@@ -15,10 +15,10 @@ router.post("/add", async (req, res) => {
     if(req.user.type !== userTypes.STANDARD_ADMIN)
       throw new Error("invalid request")
 
-    const department = await Department.findOne({ user_id: req.user._id })
+    const department = await Department.findOne({ userId: req.user._id })
     if (!department) throw new Error("Department does not exists")
     // check if the user has access to its own department or not
-    if (req.user._id.toString() !== department.user_id.toString())
+    if (req.user._id.toString() !== department.userId.toString())
       throw new Error("invalid request")
 
     const {
@@ -26,17 +26,17 @@ router.post("/add", async (req, res) => {
       email,
       logo,
       address,
-      phone_number,
-      id_card
+      phoneNumber,
+      idCard
     } = req.body
     const employee = new Employee({
       name,
       email,
       logo,
-      department_id : department._id,
-      id_card,
+      departmentId : department._id,
+      idCard,
       address,
-      phone_number
+      phoneNumber
     })
     await employee.save();
 
@@ -54,20 +54,20 @@ router.post("/edit", async (req, res) => {
     if(req.user.type !== userTypes.STANDARD_ADMIN)
     throw new Error("invalid request")
 
-    const department = await Department.findOne({ user_id: req.user._id })
+    const department = await Department.findOne({ userId: req.user._id })
     if (!department) throw new Error("Department does not exists")
 
-    if (req.user._id.toString() !== department.user_id.toString())
+    if (req.user._id.toString() !== department.userId.toString())
       throw new Error("invalid request")
 
     const employee = await Employee.findById(req.body.id)
     if (!employee) throw new Error("Employee does not exists")
        // check if the standard admin is updating its own department
-    if (department._id.toString() !== employee.department_id.toString())
+    if (department._id.toString() !== employee.departmentId.toString())
       throw new Error("invalid request")
 
     await Employee.updateOne(
-      { _id : employee._id , department_id : department._id},
+      { _id : employee._id , departmentId : department._id},
       { $set : req.body}
     )
     const updatedEmployee = await Employee.findById(req.body.id);
@@ -79,24 +79,24 @@ router.post("/edit", async (req, res) => {
   }
 })
 
-router.post("/details/:employee_id", async (req, res) => {
+router.post("/details/:employeeId", async (req, res) => {
   try {
-    if (!req.params.employee_id) throw new Error("Employee id is required")
-    if (!mongoose.isValidObjectId(req.params.employee_id)) throw new Error("Employee id is invalid")
+    if (!req.params.employeeId) throw new Error("Employee id is required")
+    if (!mongoose.isValidObjectId(req.params.employeeId)) throw new Error("Employee id is invalid")
 
     if(req.user.type !== userTypes.STANDARD_ADMIN)
     throw new Error("invalid request")
 
-    const department = await Department.findOne({ user_id: req.user._id })
+    const department = await Department.findOne({ userId: req.user._id })
     if (!department) throw new Error("Department does not exists")
 
-    if (req.user._id.toString() !== department.user_id.toString())
+    if (req.user._id.toString() !== department.userId.toString())
       throw new Error("invalid request")
 
-    const employee = await Employee.findById(req.params.employee_id)
+    const employee = await Employee.findById(req.params.employeeId)
     if (!employee) throw new Error("Employee does not exists")
        // check if the standard admin is updating its own department
-    if (department._id.toString() !== employee.department_id.toString())
+    if (department._id.toString() !== employee.departmentId.toString())
       throw new Error("invalid request")
 
     res.json( employee )
@@ -114,19 +114,19 @@ router.delete("/delete", async (req, res) => {
     if(req.user.type !== userTypes.STANDARD_ADMIN)
     throw new Error("invalid request")
 
-    const department = await Department.findOne({ user_id: req.user._id })
+    const department = await Department.findOne({ userId: req.user._id })
     if (!department) throw new Error("Department does not exists")
 
-    if (req.user._id.toString() !== department.user_id.toString())
+    if (req.user._id.toString() !== department.userId.toString())
       throw new Error("invalid request")
 
     const employee = await Employee.findById(req.body.id)
     if (!employee) throw new Error("Employee does not exists")
       // check if the standard admin 
-    if (department._id.toString() !== employee.department_id.toString())
+    if (department._id.toString() !== employee.departmentId.toString())
       throw new Error("invalid request")
 
-    await Employee.deleteOne({ _id : req.body.id , department_id : department._id })
+    await Employee.deleteOne({ _id : req.body.id , departmentId : department._id })
     res.json({ success: true })
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -139,19 +139,49 @@ router.post("/search", async (req, res) => {
     if(req.user.type !== userTypes.STANDARD_ADMIN)
     throw new Error("invalid request")
 
-    const department = await Department.findOne({ user_id: req.user._id })
+    const department = await Department.findOne({ userId: req.user._id })
     if (!department) throw new Error("Department does not exists")
 
-    if (req.user._id.toString() !== department.user_id.toString())
+    if (req.user._id.toString() !== department.userId.toString())
       throw new Error("invalid request")
-
-  
 
     const employees = await Employee.find(req.body)
     res.json( {employees} )
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
+})
+router.post("/feedback",async (req,res) => {
+try {
+  const {
+    employeeId , 
+    rating, 
+    name , 
+    phoneNumber,
+    feedbackText 
+  } = req.body
+  
+  const employee = await Employee.findById(employeeId)
+  if (!employee) throw new Error("Employee does not exists")
+  
+
+
+  if(rating < 0 || rating > 5)
+    throw new Error("invalid request")
+
+  const ratingData = Rating({
+    name,
+    phoneNumber,
+    departmentId : employee.departmentId,
+    employeeId,
+    rating,
+    feedbackText
+  })
+  await ratingData.save()
+  res.json({ rating: ratingData})
+} catch (error) {
+  res.status(400).json({ error: error.message })
+}
 })
 
 module.exports = router
