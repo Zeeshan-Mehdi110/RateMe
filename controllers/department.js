@@ -2,7 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const Department = require("../models/Department");
 const User = require("../models/User");
-const { verifyUser } = require("../middlewares/user_auth");
+const { verifyUser } = require("../middlewares/auth");
 const { userTypes } = require("../utils/util");
 const router = express.Router()
 
@@ -16,20 +16,20 @@ router.post("/add", async (req, res) => {
     const user = await User.findById(req.user._id)
     if (!user) throw new Error("Department does not exists")
     const {
-      department_name,
-      department_email,
+      departmentName,
+      departmentEmail,
       logo,
       address,
-      phone_number,
-      user_id,
+      phoneNumber,
+      userId,
     } = req.body
     const department = new Department({
-      department_name,
-      department_email,
+      departmentName,
+      departmentEmail,
       logo,
       address,
-      phone_number,
-      user_id
+      phoneNumber,
+      userId
     })
     await department.save();
 
@@ -48,23 +48,23 @@ router.post("/edit", async (req, res) => {
     if (!department) throw new Error("Department does not exists")
     console.log(req.user.type)
     // check if this is the user that has access to its own department
-    if(req.user.type !== userTypes.SUPER_ADMIN && req.user._id.toString() !== department.user_id.toString() )
+    if(req.user.type !== userTypes.SUPER_ADMIN && req.user._id.toString() !== department.userId.toString() )
     // both conditions need to be true in order for the error to be thrown with the message "invalid request".
       throw new Error("invalid request")
 
     const {
-      department_name,
-      department_email,
+      departmentName,
+      departmentEmail,
       logo,
       address,
-      phone_number
+      phoneNumber
     } = req.body
     let updatedDepartment = await Department.findByIdAndUpdate(req.body.id, {
-      department_name,
-      department_email,
+      departmentName,
+      departmentEmail,
       logo,
       address,
-      phone_number
+      phoneNumber
     })
     res.json({ department: updatedDepartment })
   } catch (error) {
@@ -83,9 +83,9 @@ router.delete("/delete", async (req, res) => {
     const department = await Department.findById(req.body.id)
     if (!department) throw new Error("Department does not exists")
        // check if this is the user that has access to its own department
-        console.log(req.user._id.toString())
-    if(req.user._id.toString() !== "department.user_id.toString()" )
+    if(req.user._id.toString() !== department.userId.toString()) 
       throw new Error("invalid request")
+
     await Department.findOneAndDelete(req.body.id)
     res.json({ success: true })
   } catch (error) {

@@ -2,8 +2,8 @@ const express = require("express")
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const { verifyUser } = require("../middlewares/auth");
 const { createJWTToken } = require("../utils/util");
-const { verifyUser } = require("../middlewares/user_auth");
 const router = express.Router()
 
 router.use(["/add","/edit","/delete","/profile","/profile-update"],verifyUser)
@@ -12,16 +12,16 @@ router.post("/add",async (req,res)=> {
   try {
   const userExist = await User.findOne({email : req.body.email})
   if(userExist) throw new Error("This email is already registered")
-  const { name ,email,phone_number,profile_picture,password,type,created_on,modified_on } = req.body
+  const { name ,email,phoneNumber,profilePicture,password,type,createdOn,modifiedOn } = req.body
   let user = new User({
     name,
     email,
-    phone_number,
-    profile_picture,
+    phoneNumber,
+    profilePicture,
     password : await bcrypt.hash(password , 10),
     type,
-    created_on,
-    modified_on 
+    createdOn,
+    modifiedOn 
   }) 
   await user.save();
 
@@ -45,15 +45,15 @@ router.post("/edit",async (req,res)=> {
   const user = await User.findById(req.body.id)
   if(!user) throw new Error("User does not exists")
 
-  const { name ,email,phone_number,profile_picture,password,type,created_on } = req.body
+  const { name ,email,phoneNumber,profilePicture,password,type,createdOn } = req.body
   let updatedUser =  await  User.findByIdAndUpdate(req.body.id ,{
     name : name,
     email : email,
-    phone_number,
-    profile_picture,
+    phoneNumber,
+    profilePicture,
     password : await bcrypt.hash(password , 10),
     type,
-    created_on :created_on,
+    createdOn :createdOn,
   }) 
 
   delete user.password
@@ -96,16 +96,16 @@ router.post("/profile-update",async (req,res)=> {
 try {
   if(userExist) throw new Error("This email is already registered")
 
-  const { name ,email,phone_number,profile_picture,password,type,active,created_on,modified_on } = req.body
+  const { name ,email,phoneNumber,profilePicture,password,type,active,createdOn,modifiedOn } = req.body
   let updatedUser =  await  User.findByIdAndUpdate(req.user._id ,{
     name : name,
     email : email,
-    phone_number,
-    profile_picture,
+    phoneNumber,
+    profilePicture,
     password : await bcrypt.hash(password , 10),
     type,
     active,
-    created_on :created_on,
+    createdOn :createdOn,
   }) 
   // await updatedUser.save();
   updatedUser = updatedUser.toObject()
@@ -125,11 +125,16 @@ router.post("/signIn",async (req,res) => {
     if(!(await bcrypt.compare(req.body.password , user.password)))
       throw new Error('Email or password is incorrect')
       
+      const token = await createJWTToken(user,12)
+
       user = user.toObject()
       delete user.password
 
-      const token = await createJWTToken(user,12)
-      res.json({user,token})
+
+      res.json({
+        user,
+        token
+      })
 
   } catch (error) {
     res.status(400).json({error : error.message})
