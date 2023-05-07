@@ -4,6 +4,7 @@
   "description": "MERN Final Project",
   "main": "index.js",
   "scripts": {
+    "server":"nodemon index.js --ignore client/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Zeeshan Mehdi",
