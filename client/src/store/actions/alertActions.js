@@ -1,7 +1,7 @@
 export const alertActionTypes = {
   SHOW_SUCCESS: 'SHOW_SUCCESS',
-  SHOW_ERROR: 'HIDE_ALERT',
-  SHOW_INFO: 'CLEAR_ALERT',
+  SHOW_ERROR: 'SHOW_ERROR',
+  SHOW_INFO: 'show info',
   SHOW_WARNING : "SHOW_WARNING",
   CLEAR_ALERT:"CLEAR_ALERT",
 }
