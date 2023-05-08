@@ -1,8 +1,9 @@
+import AppPublic from "./AppPublic";
 
 function App() {
   return (
     <div className="App">
-      client
+      <AppPublic/>
     </div>
   );
 }
