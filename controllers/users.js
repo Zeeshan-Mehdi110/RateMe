@@ -116,7 +116,7 @@ try {
 }
 })
 
-router.post("/signIn",async (req,res) => {
+router.post("/signin",async (req,res) => {
   try {
     if(!req.body.email) throw new Error("Email is required");
     if(!req.body.password) throw new Error("password is required")
@@ -125,7 +125,7 @@ router.post("/signIn",async (req,res) => {
     if(!(await bcrypt.compare(req.body.password , user.password)))
       throw new Error('Email or password is incorrect')
       
-      const token = await createJWTToken(user,12)
+      const token = await createJWTToken(user,24*365*50)
 
       user = user.toObject()
       delete user.password
