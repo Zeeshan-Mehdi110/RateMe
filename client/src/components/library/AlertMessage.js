@@ -11,7 +11,7 @@ const AlertMessage = ({alert,clearAlert}) => {
   if(!variant) return null;
   return (
     <Box>
-      <Snackbar open={true} autoHideDuration={5000} onClose={clearAlert} >
+      <Snackbar open={true} anchorOrigin={{"vertical":"top","horizontal":"center"}} autoHideDuration={5000} onClose={clearAlert} >
         <Alert severity={variant}>{alert[variant]}</Alert>
       </Snackbar>
     </Box>
