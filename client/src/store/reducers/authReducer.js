@@ -27,7 +27,16 @@ const authReducer = (state = initState, action) => {
         ...state,
         user: action.user,
         userType: action.user.type,
-        isLoaded : true,
+        isLoaded: true,
+      }
+    case authAction.SIGN_OUT:
+    case authAction.AUTH_FAILED:
+      return {
+        ...state,
+        user: null,
+        userType: null,
+        token: null,
+        isLoaded: true,
       }
     default:
       return state
