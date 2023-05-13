@@ -9,16 +9,19 @@ export const authAction = {
 }
 
 export const signIn = (user, token) => ({ type: authAction.SIGN_IN, user, token })
-export const loadToken = () => {
-  const token = localStorage.getItem("token")
-  return {
-    type: authAction.LOAD_TOKEN,
-    token: token ? token : null
-  }
+export const signOut = () => {
+  localStorage.removeItem("token");
+  return { type: authAction.SIGN_OUT }
 }
 
 export const loadAuth = () => {
   return (dispatch, getState) => {
+    const token = localStorage.getItem("token")
+    dispatch({
+      type: authAction.LOAD_TOKEN,
+      token: token ? token : null
+    })
+
     axios.get("/users/profile").then(({ data }) => {
       dispatch({
         type: authAction.AUTH_LOADED,
