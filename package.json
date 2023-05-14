@@ -4,12 +4,13 @@
   "description": "MERN Final Project",
   "main": "index.js",
   "scripts": {
-    "server":"nodemon index.js --ignore client/",
+    "server": "nodemon index.js --ignore client/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Zeeshan Mehdi",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
