@@ -1,7 +1,7 @@
 import { progressBarActionTypes } from "../actions/progressBarAction"
 
 const initState = {
-  loading : false,
+  loading : true,
 
 }
 
