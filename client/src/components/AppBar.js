@@ -1,10 +1,10 @@
 import {Avatar, Box, Button, Container, IconButton, Menu, MenuItem, AppBar as MuiAppBar, Toolbar, Tooltip, Typography } from '@mui/material'
-import AdbIcon from "@mui/icons-material/Adb"
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { signOut } from '../store/actions/authActions'
 import ProgressBar from './library/ProgressBar'
+import StarsIcon from '@mui/icons-material/Stars';
 const AppBar = () => {
   const dispatch = useDispatch()
   const [anchorEl,setAnchorEl] = useState(null);
@@ -22,7 +22,7 @@ const AppBar = () => {
     <MuiAppBar>
       <Container maxWidth="xl" >
         <Toolbar>
-          <AdbIcon sx={{ display: "flex", mr: 1 }} />
+          <StarsIcon sx={{ display: "flex", mr: 1 }} />
           <Typography variant="h6"
             component={Link}
             sx={{
