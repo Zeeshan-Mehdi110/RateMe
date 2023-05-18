@@ -5,12 +5,12 @@ import { connect } from "react-redux";
 import { Button } from "@mui/material";
 import AppPreLoader from "./components/library/AppPreLoader";
 import { Navigate, useLocation } from "react-router-dom";
+import AppBar from "./components/AppBar";
 
 const publicRoutes = ["/admin/signin","/admin/forgot-password","/admin/reset-password/"]
 
 function App({ user, isAuthLoaded, loadAuth }) {
   const location = useLocation()
-  console.log(location)
   useEffect(() => {
     loadAuth();
   }, [])
@@ -27,6 +27,7 @@ function App({ user, isAuthLoaded, loadAuth }) {
   
   return (
   <div>
+    <AppBar />
     You are Signed in
     <Button onClick={signOut} >LogOut</Button>
   </div>

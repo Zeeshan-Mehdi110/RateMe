@@ -4,7 +4,7 @@ import { authAction } from "../store/actions/authActions";
 export const configureAxios = (store) => {
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL
 
-  // response middleware
+  // request middleware
   axios.interceptors.request.use((config) => {
     const state = store.getState();
     config.headers.Authorization = "Bearer " + state.auth.token;

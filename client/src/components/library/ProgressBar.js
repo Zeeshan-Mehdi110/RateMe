@@ -8,7 +8,7 @@ const ProgressBar = () => {
   return (
     <div>
       {
-        loading? <LinearProgress /> : null
+        loading? <LinearProgress color='info' /> : null
       }
     </div>
   )
