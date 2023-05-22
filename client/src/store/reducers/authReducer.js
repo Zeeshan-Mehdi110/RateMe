@@ -1,10 +1,10 @@
-import { authAction } from "../actions/authActions"
+import { authAction } from '../actions/authActions'
 
 const initState = {
   user: null,
   token: null,
   userType: null,
-  isLoaded: false,
+  isLoaded: false
 }
 
 const authReducer = (state = initState, action) => {
@@ -20,14 +20,19 @@ const authReducer = (state = initState, action) => {
     case authAction.LOAD_TOKEN:
       return {
         ...state,
-        token: action.token,
+        token: action.token
+      }
+    case authAction.UPDATE_USER:
+      return {
+        ...state,
+        user: action.user
       }
     case authAction.AUTH_LOADED:
       return {
         ...state,
         user: action.user,
         userType: action.user.type,
-        isLoaded: true,
+        isLoaded: true
       }
     case authAction.SIGN_OUT:
     case authAction.AUTH_FAILED:
@@ -36,11 +41,11 @@ const authReducer = (state = initState, action) => {
         user: null,
         userType: null,
         token: null,
-        isLoaded: true,
+        isLoaded: true
       }
     default:
       return state
   }
 }
 
-export default authReducer;
+export default authReducer

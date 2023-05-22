@@ -14,7 +14,7 @@ const SignIn = () => {
       <Typography textAlign={'center'} variant='h5' fontWeight={"bold"} pb={2} >Rate Me</Typography>
       <Form
         onSubmit={(data) => {
-          return axios.post("/users/signin",data).then(({data}) =>{
+          return axios.post("api/users/signin",data).then(({data}) =>{
             dispatch(signIn(data.user,data.token))
             localStorage.setItem('token', data.token)
           }).catch((err) => {
