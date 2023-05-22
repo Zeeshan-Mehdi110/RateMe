@@ -10,6 +10,7 @@ const multer = require('multer')
 const ejs = require('ejs')
 const router = express.Router()
 const fs = require('fs').promises
+const path = require('path')
 
 router.use(
   ['/add', '/edit', '/delete', '/profile', '/profile-update'],
@@ -135,7 +136,19 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage })
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    // cb = callback
+    const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
+    const ext = path.extname(file.originalname).replace('.', '')
+    if (allowedTypes.includes(ext)) {
+      cb(null, true)
+    } else {
+      cb(new Error('File type not allowed'), false)
+    }
+  }
+})
 
 router.post(
   '/profile-update',
@@ -148,8 +161,17 @@ router.post(
         phoneNumber: req.body.phoneNumber,
         modifiedOn: new Date()
       }
-      if (req.file && req.file.filename)
+      if (req.file && req.file.filename) {
         record.profilePicture = req.file.filename
+        if (
+          req.user.profilePicture &&
+          req.user.profilePicture !== req.file.filename
+        ) {
+          const oldPicPath = `content/${req.user._id}/${req.user.profilePicture}`
+          await fs.unlink(oldPicPath)
+        }
+      }
+      record.profilePicture = req.file.filename
       if (req.body.newPassword) {
         if (!req.body.currentPassword)
           throw new Error('Current password is required')

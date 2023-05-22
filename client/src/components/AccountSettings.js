@@ -10,6 +10,7 @@ import {
   showProgressBar
 } from '../store/actions/progressBarAction'
 import FileInput from './library/FileInput'
+import { updateUser } from '../store/actions/authActions'
 
 const AccountSettings = ({ user, loading }) => {
   const dispatch = useDispatch()
@@ -25,9 +26,10 @@ const AccountSettings = ({ user, loading }) => {
         onSubmit={(data) => {
           dispatch(showProgressBar())
           return axios
-            .postForm('/users/profile-update', data)
+            .postForm('api/users/profile-update', data)
             .then(({ data }) => {
               if (data.user) {
+                dispatch(updateUser(data.user))
                 dispatch(showSuccess('Account settings updated successfully'))
               }
               dispatch(hideProgressBar())
