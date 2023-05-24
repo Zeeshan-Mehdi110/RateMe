@@ -59,6 +59,13 @@ const AppBar = () => {
             >
               Departments
             </Button>
+            <Button
+              component={Link}
+              to="/admin/departments/add"
+              sx={{ color: 'white' }}
+            >
+              Add Departments
+            </Button>
           </Box>
           <Box>
             <Tooltip title="Open Settings">

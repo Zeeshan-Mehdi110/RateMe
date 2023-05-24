@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import AppPublic from './AppPublic'
 import { loadAuth, signOut } from './store/actions/authActions'
 import { connect } from 'react-redux'
-import { Button } from '@mui/material'
 import AppPreLoader from './components/library/AppPreLoader'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import AppBar from './components/AppBar'
@@ -11,6 +10,9 @@ import AccountSettings from './components/AccountSettings'
 import Dashboard from './components/Dashboard'
 import AlertMessage from './components/library/AlertMessage'
 import BlockInterface from './components/library/BlockInterface'
+import AddDepartment from './components/departments/AddDepartment'
+import EditDepartment from './components/departments/EditDepartment'
+import Departments from './components/departments/Departments'
 
 const publicRoutes = [
   '/admin/signin',
@@ -53,6 +55,14 @@ function App({ user, isAuthLoaded, loadAuth }) {
         <Routes>
           <Route path="/admin/account-settings" Component={AccountSettings} />
           <Route path="/admin/dashboard" Component={Dashboard} />
+          {/* Departments routes */}
+          <Route path="/admin/departments" Component={Departments} />
+          <Route path="/admin/departments/add" Component={AddDepartment} />
+          <Route
+            path="/admin/departments/edit/:deptId"
+            Component={EditDepartment}
+          />
+          {/* <Route path="/admin/departments/edit/deptId" Component={Edit} /> */}
         </Routes>
       </Container>
     </div>
