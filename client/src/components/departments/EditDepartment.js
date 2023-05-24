@@ -9,13 +9,17 @@ import {
 import FileInput from '../library/FileInput'
 import { showError, showSuccess } from '../../store/actions/alertActions'
 import { updateDepartment } from '../../store/actions/departmentActions'
-import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 
 function EditDepartment() {
+  const navigator = useNavigate()
   const dispatch = useDispatch()
   const { deptId } = useParams()
-  console.log(deptId)
+  const department = useSelector((state) =>
+    state.departments.records.find((item) => item._id === deptId)
+  )
+  if (!department) return <Navigate to="/admin/departments" />
   const validate = (data) => {
     const errors = {}
 
@@ -30,10 +34,14 @@ function EditDepartment() {
   const handelDepartment = async (data, form) => {
     try {
       dispatch(showProgressBar())
-      let result = await axios.postForm('api/departments/edit', data)
+      let result = await axios.postForm('api/departments/edit', {
+        ...data,
+        id: deptId
+      })
       if (result.data.department) {
         dispatch(updateDepartment(result.data.department))
         dispatch(showSuccess('Department Updated successfully'))
+        navigator('/admin/departments')
       }
       dispatch(hideProgressBar())
     } catch (error) {
@@ -51,11 +59,16 @@ function EditDepartment() {
       textAlign={'center'}
       sx={{ width: { sm: '50%', md: '50%' }, mx: 'auto' }}
     >
-      <h3>Edit Department</h3>
+      <h3>Update Department</h3>
       <Form
         onSubmit={handelDepartment}
         validate={validate}
-        initialValues={{}}
+        initialValues={{
+          name: department.name,
+          email: department.email,
+          phone: department.phone,
+          address: department.address
+        }}
         render={({ handleSubmit, submitting, invalid }) => (
           <form
             onSubmit={handleSubmit}
@@ -101,7 +114,7 @@ function EditDepartment() {
               type="submit"
               disabled={invalid || submitting}
             >
-              Edit Department
+              Update Department
             </Button>
           </form>
         )}

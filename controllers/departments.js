@@ -42,7 +42,7 @@ router.use(verifyUser)
 
 router.post('/add', upload.single('logo'), async (req, res) => {
   try {
-    //only super admin can add department
+    // only super admin can add department
     if (req.user.type !== userTypes.SUPER_ADMIN)
       throw new Error('Invalid Request')
 
@@ -65,9 +65,8 @@ router.post('/add', upload.single('logo'), async (req, res) => {
   }
 })
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', upload.single('logo'), async (req, res) => {
   try {
-    console.log(req.body)
     if (!req.body.id) throw new Error('Department id is required')
     if (!mongoose.isValidObjectId(req.body.id))
       throw new Error('Department id is invalid')
@@ -78,21 +77,27 @@ router.post('/edit', async (req, res) => {
     //check if logged in user is not super admin and that user
     //has access to its own department
     if (
-      req.user.type !== userTypes.USER_TYPE_SUPER &&
+      req.user.type !== userTypes.SUPER_ADMIN &&
       req.user._id.toString() !== department.userId.toString()
     )
       // to string is used to convert req.user._id to string because this returns new ObjectId("6439f4ca31d7babed61963e0") that is object user id and we need only string to compare it.
       throw new Error('Invalid request')
 
-    const { name, email, phone, logo, address } = req.body
+    const record = {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address
+    }
 
-    let updatedDepartment = await Department.findByIdAndUpdate(req.body.id, {
-      name,
-      email,
-      phone,
-      logo,
-      address
-    })
+    if (req.file && req.file.filename) {
+      record.logo = req.file.filename
+    }
+
+    let updatedDepartment = await Department.findByIdAndUpdate(
+      req.body.id,
+      record
+    )
 
     res.json({ department: updatedDepartment })
   } catch (error) {
@@ -107,7 +112,7 @@ router.delete('/delete', async (req, res) => {
       throw new Error('Department id is invalid')
 
     //only super admin can delete department
-    if (req.user.type !== userTypes.USER_TYPE_SUPER)
+    if (req.user.type !== userTypes.SUPER_ADMIN)
       throw new Error('Invalid Request')
 
     const department = await Department.findById(req.body.id)
@@ -124,8 +129,8 @@ router.delete('/delete', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     //only super admin can see list of departments
-    if (req.user.type !== userTypes.USER_TYPE_SUPER)
-      throw new Error('Invalid Request')
+    // if (req.user.type !== userTypes.SUPER_ADMIN)
+    //   throw new Error('Invalid Request')
 
     const departments = await Department.find()
 

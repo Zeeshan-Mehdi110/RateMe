@@ -1,8 +1,8 @@
-import { departmentActions } from "../actions/departmentActions";
+import { departmentActions } from '../actions/departmentActions'
 
 const initialState = {
   records: []
-};
+}
 
 function departmentReducer(state = initialState, action) {
   switch (action.type) {
@@ -13,6 +13,12 @@ function departmentReducer(state = initialState, action) {
         records: newDepartmentsArray
       }
     case departmentActions.UPDATE_DEPT:
+      return {
+        ...state,
+        records: state.records.map((item) => {
+          if (item._id == action.department._id) return action.department
+        })
+      }
     case departmentActions.REMOVE_DEPT:
     case departmentActions.DEPTS_LOADED:
       return {
@@ -21,8 +27,8 @@ function departmentReducer(state = initialState, action) {
       }
 
     default:
-      return state;
+      return state
   }
 }
 
-export default departmentReducer;
+export default departmentReducer

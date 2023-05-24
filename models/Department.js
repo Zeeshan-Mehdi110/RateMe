@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const moment = require('moment/moment')
 
 const departmentSchema = new mongoose.Schema({
-  departmentName: {
+  name: {
     type: String
   },
-  departmentEmail: {
+  email: {
     type: String
   },
   logo: {
@@ -17,7 +17,7 @@ const departmentSchema = new mongoose.Schema({
   rating: {
     type: Number
   },
-  phoneNumber: {
+  phone: {
     type: Number
   },
   active: {

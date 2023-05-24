@@ -13,7 +13,7 @@ const fs = require('fs').promises
 const path = require('path')
 
 router.use(
-  ['/', '/add', '/edit', '/delete', '/profile', '/profile-update'],
+  ['/add', '/edit', '/delete', '/profile', '/profile-update'],
   verifyUser
 )
 
@@ -310,6 +310,9 @@ router.post('/reset-password', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
+    // only super admin can see list of departments
+    if (req.user.type !== userTypes.SUPER_ADMIN)
+      throw new Error('Invalid Request')
     const users = await User.find()
     res.json({ users })
   } catch (error) {

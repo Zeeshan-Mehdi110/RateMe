@@ -10,9 +10,11 @@ import FileInput from '../library/FileInput'
 import { showError, showSuccess } from '../../store/actions/alertActions'
 import { addDepartment } from '../../store/actions/departmentActions'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 function AddDepartment() {
   const dispatch = useDispatch()
+  const navigator = useNavigate()
   const validate = (data) => {
     const errors = {}
 
@@ -31,6 +33,7 @@ function AddDepartment() {
       if (result.data.department) {
         dispatch(addDepartment(result.data.department))
         dispatch(showSuccess('Department added successfully'))
+        navigator('/admin/departments')
       }
       dispatch(hideProgressBar())
     } catch (error) {
