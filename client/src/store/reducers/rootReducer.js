@@ -1,15 +1,13 @@
-import { combineReducers } from 'redux'
-import alertReducer from './alertReducer'
-import progressBarReducer from './progressBarReducer'
-import authReducer from './authReducer'
-import departmentReducer from './departmentReducer'
+import { combineReducers } from "redux";
+import alertReducer from "./alertReducer";
+import progressBarReducer from "./progressBarReducer";
+import authReducer from "./authReducer";
 
 const allReducers = {
   alert: alertReducer,
-  progressBar: progressBarReducer,
-  auth: authReducer,
-  departments: departmentReducer
+  progressBar : progressBarReducer,
+  auth : authReducer,
 }
 
-const rootReducers = combineReducers(allReducers)
-export default rootReducers
+const rootReducers =  combineReducers(allReducers);
+export default rootReducers;
