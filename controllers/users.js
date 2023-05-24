@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const User = require('../models/User')
 const { randomBytes } = require('crypto')
 const { verifyUser } = require('../middlewares/auth')
-const { createJWTToken, userTypes } = require('../utils/util')
+const { createJWTToken } = require('../utils/util')
 const { default: axios } = require('axios')
 const multer = require('multer')
 const ejs = require('ejs')
@@ -13,7 +13,7 @@ const fs = require('fs').promises
 const path = require('path')
 
 router.use(
-  ['/', '/add', '/edit', '/delete', '/profile', '/profile-update'],
+  ['/add', '/edit', '/delete', '/profile', '/profile-update'],
   verifyUser
 )
 
