@@ -1,6 +1,7 @@
 import { Form, Field } from 'react-final-form'
 import { Button, Box } from '@mui/material'
 import axios from 'axios'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import TextInput from '../library/TextInput'
 import {
   hideProgressBar,
@@ -9,17 +10,21 @@ import {
 import FileInput from '../library/FileInput'
 import { showError, showSuccess } from '../../store/actions/alertActions'
 import { updateDepartment } from '../../store/actions/departmentActions'
-import { useDispatch, useSelector } from 'react-redux'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function EditDepartment() {
-  const navigator = useNavigate()
   const dispatch = useDispatch()
+  const navigator = useNavigate()
+
   const { deptId } = useParams()
   const department = useSelector((state) =>
     state.departments.records.find((item) => item._id === deptId)
   )
-  if (!department) return <Navigate to="/admin/departments" />
+  if (!department) {
+    return <Navigate to="/admin/departments" />
+  }
+
   const validate = (data) => {
     const errors = {}
 
@@ -122,4 +127,5 @@ function EditDepartment() {
     </Box>
   )
 }
+
 export default EditDepartment

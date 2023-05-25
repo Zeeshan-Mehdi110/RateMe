@@ -16,7 +16,8 @@ function departmentReducer(state = initialState, action) {
       return {
         ...state,
         records: state.records.map((item) => {
-          if (item._id == action.department._id) return action.department
+          if (item._id !== action.department._id) return item
+          else return action.department
         })
       }
     case departmentActions.REMOVE_DEPT:

@@ -11,9 +11,9 @@ import {
   Typography
 } from '@mui/material'
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { loadDepartments } from '../../store/actions/departmentActions'
+import { connect } from 'react-redux'
 import AddIcon from '@mui/icons-material/Add'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import EditIcon from '@mui/icons-material/Edit'
@@ -22,10 +22,9 @@ function Departments({ departments, loadDepartments }) {
   useEffect(() => {
     if (departments.length === 0) loadDepartments()
   }, [])
-
   return (
     <Box>
-      <Box display={'flex'} justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between">
         <Typography variant="h5">Departments</Typography>
         <Box>
           <Button
@@ -47,27 +46,27 @@ function Departments({ departments, loadDepartments }) {
           </Button>
         </Box>
       </Box>
-
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>logo</TableCell>
+            <TableCell>Logo</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {departments.map((dept) => (
             <TableRow key={dept._id}>
               <TableCell>
                 {dept.logo && (
                   <Avatar
+                    alt={dept.name}
                     src={
                       process.env.REACT_APP_BASE_URL +
-                      'content/departments/' +
-                      dept.logo
+                      `content/departments/${dept.logo}`
                     }
                   />
                 )}
