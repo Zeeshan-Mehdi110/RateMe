@@ -64,10 +64,10 @@ function EditDepartment() {
         onSubmit={handelDepartment}
         validate={validate}
         initialValues={{
-          name: department.name,
-          email: department.email,
-          phone: department.phone,
-          address: department.address
+          name: department && department.name,
+          email: department && department.email,
+          phone: department && department.phone,
+          address: department && department.address
         }}
         render={({ handleSubmit, submitting, invalid }) => (
           <form

@@ -56,31 +56,33 @@ const Departments = ({ departments, loadDepartments }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {departments.map((dept) => (
-            <TableRow key={dept && dept._id}>
-              <TableCell>
-                <Avatar
-                  alt={dept && dept.name}
-                  src={
-                    dept?.logo &&
-                    process.env.REACT_APP_BASE_URL +
-                      `content/departments/${dept.logo}`
-                  }
-                />
-              </TableCell>
-              <TableCell>{dept && dept.name}</TableCell>
-              <TableCell>{dept && dept.phone}</TableCell>
-              <TableCell>{dept && dept.email}</TableCell>
-              <TableCell>
-                <IconButton
-                  component={Link}
-                  to={`/admin/departments/edit/${dept && dept._id}`}
-                >
-                  <EditIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {departments &&
+            departments.map((dept) => (
+              <TableRow key={dept._id}>
+                <TableCell>
+                  {dept.logo && (
+                    <Avatar
+                      alt={dept.name}
+                      src={
+                        process.env.REACT_APP_BASE_URL +
+                        `content/departments/${dept.logo}`
+                      }
+                    />
+                  )}
+                </TableCell>
+                <TableCell>{dept.name}</TableCell>
+                <TableCell>{dept.phone}</TableCell>
+                <TableCell>{dept.email}</TableCell>
+                <TableCell>
+                  <IconButton
+                    component={Link}
+                    to={`/admin/departments/edit/${dept && dept._id}`}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Box>
