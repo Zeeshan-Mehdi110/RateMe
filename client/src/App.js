@@ -13,6 +13,9 @@ import BlockInterface from './components/library/BlockInterface'
 import AddDepartment from './components/departments/AddDepartment'
 import EditDepartment from './components/departments/EditDepartment'
 import Departments from './components/departments/Departments'
+import AddUser from './components/users/AddUser'
+import Users from './components/users/Users'
+import EditUser from './components/users/EditUser'
 
 const publicRoutes = [
   '/admin/signin',
@@ -62,6 +65,10 @@ function App({ user, isAuthLoaded, loadAuth }) {
             path="/admin/departments/edit/:deptId"
             Component={EditDepartment}
           />
+          {/* Users routes */}
+          <Route path="/admin/users" Component={Users} />
+          <Route path="/admin/users/add" Component={AddUser} />
+          <Route path="/admin/users/edit/:userId" Component={EditUser} />
           {/* <Route path="/admin/departments/edit/deptId" Component={Edit} /> */}
         </Routes>
       </Container>

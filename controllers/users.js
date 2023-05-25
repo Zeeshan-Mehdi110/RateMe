@@ -19,33 +19,27 @@ router.use(
 
 router.post('/add', async (req, res) => {
   try {
+    //only super admin can add user
+    if (req.user.type !== userTypes.SUPER_ADMIN)
+      throw new Error('Invalid Request')
+
     const userExist = await User.findOne({ email: req.body.email })
     if (userExist) throw new Error('This email is already registered')
-    const {
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
-      password,
-      type,
-      createdOn,
-      modifiedOn
-    } = req.body
-    let user = new User({
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
-      password: await bcrypt.hash(password, 10),
-      type,
-      createdOn,
-      modifiedOn
-    })
-    await user.save()
 
-    user = user.toObject()
-    delete user.password
-    res.json(user)
+    const record = {
+      name: req.body.name,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      password: await bcrypt.hash(req.body.password, 10),
+      type: req.body.type,
+      departmentId: req.body.departmentId,
+      createdOn: new Date()
+    }
+
+    const user = new User(record)
+
+    await user.save()
+    res.json({ user })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -53,6 +47,10 @@ router.post('/add', async (req, res) => {
 
 router.post('/edit', async (req, res) => {
   try {
+    //only super admin can edit user
+    if (req.user.type !== userTypes.SUPER_ADMIN)
+      throw new Error('Invalid Request')
+
     const userExist = await User.findOne({
       email: req.body.email,
       _id: { $ne: req.body.id }
@@ -61,33 +59,28 @@ router.post('/edit', async (req, res) => {
 
     if (!req.body.id) throw new Error('User id is required')
     if (!mongoose.isValidObjectId(req.body.id))
-      throw new Error('user id is invalid')
-    if (req.user._id.toString() !== req.body.id)
-      throw new Error('invalid request')
+      throw new Error('User id is invalid')
 
     const user = await User.findById(req.body.id)
     if (!user) throw new Error('User does not exists')
 
-    const {
-      name,
-      email,
-      phoneNumber,
-      profilePicture,
-      password,
-      type,
-      createdOn
-    } = req.body
-    let updatedUser = await User.findByIdAndUpdate(req.body.id, {
-      name: name,
-      email: email,
-      phoneNumber,
-      profilePicture,
-      password: await bcrypt.hash(password, 10),
-      type,
-      createdOn: createdOn
-    })
+    const record = {
+      name: req.body.name,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      type: req.body.type,
+      departmentId: req.body.departmentId,
+      modifiedOn: new Date()
+    }
 
-    delete user.password
+    if (req.body.password)
+      record.password = await bcrypt.hash(req.body.password, 10)
+
+    await User.findByIdAndUpdate(req.body.id, record)
+
+    let updatedUser = await User.findById(req.body.id)
+    delete updatedUser.password
+
     res.json({ user: updatedUser })
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -311,8 +304,8 @@ router.post('/reset-password', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     // only super admin can see list of departments
-    if (req.user.type !== userTypes.SUPER_ADMIN)
-      throw new Error('Invalid Request')
+    // if (req.user.type !== userTypes.SUPER_ADMIN)
+    //   throw new Error('Invalid Request')
     const users = await User.find()
     res.json({ users })
   } catch (error) {

@@ -92,14 +92,13 @@ router.post('/edit', upload.single('logo'), async (req, res) => {
 
     if (req.file && req.file.filename) {
       record.logo = req.file.filename
+      if (department.logo && department.logo !== req.file.fieldname)
+        await fs.unlink('content/departments/' + department.logo)
     }
 
-    let updatedDepartment = await Department.findByIdAndUpdate(
-      req.body.id,
-      record
-    )
+    await Department.findByIdAndUpdate(req.body.id, record)
 
-    res.json({ department: updatedDepartment })
+    res.json({ department: await Department.findById(req.body.id) })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
