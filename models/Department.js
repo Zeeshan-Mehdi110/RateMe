@@ -8,6 +8,7 @@ const departmentSchema = new mongoose.Schema({
   email: {
     type: String
   },
+
   logo: {
     type: String
   },
@@ -18,9 +19,6 @@ const departmentSchema = new mongoose.Schema({
     type: Number
   },
   phone: {
-    type: Number
-  },
-  phoneNumber: {
     type: Number
   },
   active: {
