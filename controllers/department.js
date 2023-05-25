@@ -51,7 +51,7 @@ router.post('/edit', upload.single('logo'), async (req, res) => {
     //check if logged in user is not super admin and that user
     //has access to its own department
     if (
-      req.user.type !== userTypes.USER_TYPE_SUPER &&
+      req.user.type !== userTypes.SUPER_ADMIN &&
       req.user._id.toString() !== department.userId.toString()
     )
       // to string is used to convert req.user._id to string because this returns new ObjectId("6439f4ca31d7babed61963e0") that is object user id and we need only string to compare it.
