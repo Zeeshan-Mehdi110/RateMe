@@ -8,6 +8,13 @@ const departmentSchema = new mongoose.Schema({
   email: {
     type: String
   },
+
+  logo: {
+    type: String
+  },
+  address: {
+    type: String
+  },
   rating: {
     type: Number
   },
