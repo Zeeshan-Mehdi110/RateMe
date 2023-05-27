@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import AddIcon from '@mui/icons-material/Add'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import EditIcon from '@mui/icons-material/Edit'
+import DeleteDepartment from './DeleteDepartment'
 
 function Departments({ departments, loadDepartments }) {
   useEffect(() => {
@@ -81,6 +82,7 @@ function Departments({ departments, loadDepartments }) {
                 >
                   <EditIcon />
                 </IconButton>
+                <DeleteDepartment departmentId={dept._id} name={dept.name} />
               </TableCell>
             </TableRow>
           ))}

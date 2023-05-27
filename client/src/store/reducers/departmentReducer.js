@@ -22,6 +22,10 @@ function departmentReducer(state = initialState, action) {
         })
       }
     case departmentActions.REMOVE_DEPT:
+      return {
+        ...state,
+        records: state.records.filter((item) => item._id !== action.id)
+      }
     case departmentActions.DEPTS_LOADED:
       return {
         ...state,

@@ -17,8 +17,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { signOut } from '../store/actions/authActions'
 import ProgressBar from './library/ProgressBar'
 import StarsIcon from '@mui/icons-material/Stars'
+import { userTypes } from '../utils/constants'
 const AppBar = () => {
   const user = useSelector((state) => state.auth.user)
+  const userType = user.userType
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
   const openMenu = (event) => {
@@ -52,13 +54,26 @@ const AppBar = () => {
             RateMe
           </Typography>
           <Box flexGrow={1} textAlign={'right'}>
-            <Button
-              component={Link}
-              to="/admin/departments"
-              sx={{ color: 'white' }}
-            >
-              Departments
-            </Button>
+            {userType === userTypes.USER_TYPE_SUPER && (
+              <>
+                <Button
+                  component={Link}
+                  to="/admin/departments"
+                  sx={{ color: 'white' }}
+                >
+                  Departments
+                </Button>
+              </>
+            )}
+            {userType === userTypes.USER_TYPE_STANDARD && (
+              <Button
+                LinkComponent={Link}
+                to={`/admin/departments/${user.departmentId}`}
+                sx={{ color: 'white' }}
+              >
+                Employees
+              </Button>
+            )}
             <Button component={Link} to="/admin/users" sx={{ color: 'white' }}>
               Users
             </Button>
