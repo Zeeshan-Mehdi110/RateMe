@@ -20,8 +20,8 @@ router.use(
 router.post('/add', async (req, res) => {
   try {
     //only super admin can add user
-    if (req.user.type !== userTypes.SUPER_ADMIN)
-      throw new Error('Invalid Request')
+    // if (req.user.type !== userTypes.SUPER_ADMIN)
+    //   throw new Error('Invalid Request')
 
     const userExist = await User.findOne({ email: req.body.email })
     if (userExist) throw new Error('This email is already registered')

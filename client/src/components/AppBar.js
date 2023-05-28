@@ -20,7 +20,7 @@ import StarsIcon from '@mui/icons-material/Stars'
 import { userTypes } from '../utils/constants'
 const AppBar = () => {
   const user = useSelector((state) => state.auth.user)
-  const userType = user.userType
+  const userType = user.type
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
   const openMenu = (event) => {
