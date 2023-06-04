@@ -25,7 +25,7 @@ export default function DeleteDepartment({ departmentId, name }) {
 
   return (
     <>
-      <IconButton onClick={handleClick}><DeleteIcon /> </IconButton>
+      <IconButton onClick={handleClick}><DeleteIcon color='error' /> </IconButton>
       <Popover
         open={open}
         anchorEl={anchorEl}

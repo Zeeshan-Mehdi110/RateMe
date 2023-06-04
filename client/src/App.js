@@ -17,7 +17,7 @@ import AddUser from './components/users/AddUser'
 import Users from './components/users/Users'
 import EditUser from './components/users/EditUser'
 import { userTypes } from './utils/constants'
-
+import loader from "./static/loader.gif"
 const publicRoutes = [
   '/admin/signin',
   '/admin/forgot-password',
@@ -30,7 +30,7 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
     loadAuth()
   }, [])
 
-  if (!isAuthLoaded) return <AppPreLoader message={'Loading App ...'} />
+  if (!isAuthLoaded) return <AppPreLoader loader={loader} />
   if (user && publicRoutes.find((url) => location.pathname.startsWith(url)))
     return <Navigate to="/admin/dashboard" />
   if (!user && !publicRoutes.find((url) => location.pathname.startsWith(url)))

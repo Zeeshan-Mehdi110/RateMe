@@ -12,10 +12,7 @@ const router = express.Router()
 const fs = require('fs').promises
 const path = require('path')
 
-router.use(
-  ['/all', '/add', '/edit', '/delete', '/profile', '/profile-update'],
-  verifyUser
-)
+router.use(['/all', '/add', '/edit', '/delete', '/profile', '/profile-update'], verifyUser)
 
 router.post('/add', async (req, res) => {
   try {
@@ -31,7 +28,7 @@ router.post('/add', async (req, res) => {
       createdOn: new Date()
     }
     if (req.body.type === userTypes.STANDARD_ADMIN)
-      record.type = req.body.departmentId
+      record.departmentId = req.body.departmentId
 
     const user = new User(record)
 
@@ -288,7 +285,7 @@ router.post('/reset-password', async (req, res) => {
 
 router.get('/all', async (req, res) => {
   try {
-    // only super admin can see list of departments
+    // only super admin can see list of all departments Admin users
     let conditions = {}
     if (req.user.type === userTypes.STANDARD_ADMIN) {
       conditions.departmentId = req.user.departmentId;
