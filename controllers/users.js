@@ -290,9 +290,10 @@ router.get('/all', async (req, res) => {
   try {
     // only super admin can see list of departments
     let conditions = {}
-    if (req.user.type === userTypes.STANDARD_ADMIN)
+    if (req.user.type === userTypes.STANDARD_ADMIN) {
       conditions.departmentId = req.user.departmentId;
-    // conditions.type = userTypes.STANDARD_ADMIN
+      conditions.type = userTypes.STANDARD_ADMIN
+    }
     const users = await User.find(conditions)
     res.json({ users })
   } catch (error) {
