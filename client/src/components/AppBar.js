@@ -68,7 +68,7 @@ const AppBar = () => {
             {userType === userTypes.USER_TYPE_STANDARD && (
               <Button
                 LinkComponent={Link}
-                to={`/admin/departments/${user.departmentId}`}
+                to={`/admin/employees/${user.departmentId}`}
                 sx={{ color: 'white' }}
               >
                 Employees

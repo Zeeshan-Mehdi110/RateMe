@@ -1,3 +1,4 @@
+import { authAction } from '../actions/authActions'
 import { userActions } from '../actions/userActions'
 
 const initialState = {
@@ -21,12 +22,21 @@ function userReducer(state = initialState, action) {
         })
       }
     case userActions.REMOVE_USER:
+      return {
+        ...state,
+        records: state.records.filter((item) => item._id !== action.id)
+      }
     case userActions.USERS_LOADED:
       return {
         ...state,
         records: action.users
       }
-
+    case authAction.AUTH_FAILED:
+    case authAction.SIGN_OUT:
+      return {
+        ...state,
+        records: []
+      }
     default:
       return state
   }

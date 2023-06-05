@@ -18,6 +18,7 @@ import Users from './components/users/Users'
 import EditUser from './components/users/EditUser'
 import { userTypes } from './utils/constants'
 import loader from "./static/loader.gif"
+import Employees from './components/employees/Employees'
 const publicRoutes = [
   '/admin/signin',
   '/admin/forgot-password',
@@ -75,6 +76,8 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path="/admin/users/add" Component={AddUser} />
           <Route path="/admin/users/edit/:userId" Component={EditUser} />
           {/* <Route path="/admin/departments/edit/deptId" Component={Edit} /> */}
+
+          <Route path="/admin/employees/edit/:deptId" Component={Employees} />
         </Routes>
       </Container>
     </div>
