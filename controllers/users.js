@@ -80,7 +80,6 @@ router.post('/edit', async (req, res) => {
 })
 
 router.post('/delete', async (req, res) => {
-  console.log(req.body.id)
   try {
     if (!req.body.id) throw new Error('User id is required')
     if (!mongoose.isValidObjectId(req.body.id))
@@ -97,7 +96,7 @@ router.post('/delete', async (req, res) => {
     }
 
 
-    await User.findOneAndDelete(req.body.id)
+    await User.findByIdAndDelete(req.body.id)
     res.json({ success: true })
   } catch (error) {
     res.status(400).json({ error: error.message })
