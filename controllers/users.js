@@ -24,11 +24,17 @@ router.post('/add', async (req, res) => {
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
       password: await bcrypt.hash(req.body.password, 10),
-      type: req.body.type,
       createdOn: new Date()
     }
-    if (req.body.type === userTypes.STANDARD_ADMIN)
-      record.departmentId = req.body.departmentId
+    if (req.user.type === userTypes.STANDARD_ADMIN) {
+      record.departmentId = req.user.departmentId
+      record.type = userTypes.STANDARD_ADMIN
+    } else {
+      record.type = req.body.type;
+      if (req.body.type === userTypes.STANDARD_ADMIN) {
+        record.departmentId = req.body.departmentId;
+      }
+    }
 
     const user = new User(record)
 
@@ -48,6 +54,10 @@ router.post('/edit', async (req, res) => {
 
     const user = await User.findById(req.body.id)
     if (!user) throw new Error('User does not exists')
+
+    if (req.user.type === userTypes.STANDARD_ADMIN && user.departmentId.toString() !== req.user.departmentId.toString()) {
+      throw new Error("invalid request")
+    }
 
     const record = {
       name: req.body.name,
@@ -69,8 +79,7 @@ router.post('/edit', async (req, res) => {
   }
 })
 
-router.delete('/delete', async (req, res) => {
-  console.log(req.body.id)
+router.post('/delete', async (req, res) => {
   try {
     if (!req.body.id) throw new Error('User id is required')
     if (!mongoose.isValidObjectId(req.body.id))
@@ -79,7 +88,15 @@ router.delete('/delete', async (req, res) => {
     const user = await User.findById(req.body.id)
     if (!user) throw new Error('User does not exists')
 
-    await User.findOneAndDelete(req.body.id)
+    if (req.body.id === req.user._id.toString())
+      throw new Error('invalid request')
+
+    if (req.user.type === userTypes.STANDARD_ADMIN && user.departmentId.toString() !== req.user.departmentId.toString()) {
+      throw new Error("invalid request")
+    }
+
+
+    await User.findByIdAndDelete(req.body.id)
     res.json({ success: true })
   } catch (error) {
     res.status(400).json({ error: error.message })
