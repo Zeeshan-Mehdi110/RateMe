@@ -21,7 +21,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteUser from './DeleteUser'
 import { userTypes } from '../../utils/constants'
 
-function Users({ users, loadUsers, userType }) {
+function Users({ users, loadUsers, loggedInUserType }) {
   useEffect(() => {
     if (users.length === 0) loadUsers()
   }, [])
@@ -56,7 +56,7 @@ function Users({ users, loadUsers, userType }) {
             <TableCell>Phone</TableCell>
             <TableCell>Email</TableCell>
             {
-              userType === userTypes.USER_TYPE_SUPER && <TableCell>Type</TableCell>
+              loggedInUserType === userTypes.USER_TYPE_SUPER && <TableCell>Type</TableCell>
             }
             <TableCell>Actions</TableCell>
           </TableRow>
@@ -68,7 +68,7 @@ function Users({ users, loadUsers, userType }) {
               <TableCell>{user.phoneNumber}</TableCell>
               <TableCell>{user.email}</TableCell>
               {
-                userType === userTypes.USER_TYPE_SUPER &&
+                loggedInUserType === userTypes.USER_TYPE_SUPER &&
                 <>
                   <TableCell>
                     {user.type == 1 ? (
@@ -99,7 +99,7 @@ function Users({ users, loadUsers, userType }) {
 const mapStateToProps = (state) => {
   return {
     users: state.users.records,
-    userType: state.auth.user.type
+    loggedInUserType: state.auth.user.type
   }
 }
 
