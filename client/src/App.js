@@ -76,7 +76,7 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path="/admin/users/add" Component={AddUser} />
           <Route path="/admin/users/edit/:userId" Component={EditUser} />
 
-          <Route path="/admin/employees/edit/:deptId" Component={Employees} />
+          <Route path="/admin/employees/:deptId" Component={Employees} />
         </Routes>
       </Container>
     </div>
