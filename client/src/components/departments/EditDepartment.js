@@ -12,23 +12,32 @@ import { showError, showSuccess } from '../../store/actions/alertActions'
 import { updateDepartment } from '../../store/actions/departmentActions'
 import { Navigate, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { userTypes } from "../../utils/constants";
 
 function EditDepartment() {
   const dispatch = useDispatch()
   const navigator = useNavigate()
+  const [department, setDepartment] = useState(null)
+  const loggedInUserType = useSelector(state => state.auth.user.type);
 
   const { deptId } = useParams()
-  const department = useSelector((state) =>
-    state.departments.records.find((item) => item._id === deptId)
-  )
-  if (!department) {
-    return <Navigate to="/admin/departments" />
-  }
+  useEffect(() => {
+    axios.get("/api/departments/details/" + deptId).then((result) => {
+      setDepartment(result.data.department)
+    }).catch(error => {
+      let message = error && error.response && error.response.data ? error.response.data.error : error.message;
+      dispatch(hideProgressBar())
+      dispatch(showError(message))
+    })
+  }, [])
+
+  if (!department) return null;
 
   const validate = (data) => {
     const errors = {}
 
-    if (!data.name) errors.name = 'Name is required'
+    if (loggedInUserType === userTypes.USER_TYPE_SUPER && !data.name) errors.name = 'Name is required'
     if (!data.email) errors.email = 'Email is required'
     else if (!/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/.test(data.email))
       errors.email = 'Invalid email address'
@@ -46,7 +55,7 @@ function EditDepartment() {
       if (result.data.department) {
         dispatch(updateDepartment(result.data.department))
         dispatch(showSuccess('Department Updated successfully'))
-        navigator('/admin/departments')
+        navigator(`/admin/employees/${deptId}`)
       }
       dispatch(hideProgressBar())
     } catch (error) {
@@ -80,12 +89,10 @@ function EditDepartment() {
             method="post"
             encType="multipart/form-data"
           >
-            <Field
-              component={TextInput}
-              type="text"
-              name="name"
-              placeholder="Enter name"
-            />
+            {
+              loggedInUserType === userTypes.USER_TYPE_SUPER &&
+              <Field component={TextInput} type='text' name="name" placeholder="Enter name" />
+            }
             <Field
               component={TextInput}
               type="email"

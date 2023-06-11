@@ -73,7 +73,7 @@ function Departments({ departments, loadDepartments }) {
                 )}
               </TableCell>
               <TableCell>
-                <Link to={`admin/departments/${dept._id}`} >
+                <Link to={`admin/employees/${dept._id}`} >
                   {dept.name}
                 </Link>
               </TableCell>
