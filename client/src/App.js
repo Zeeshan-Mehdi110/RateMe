@@ -20,6 +20,7 @@ import { userTypes } from './utils/constants'
 import loader from "./static/loader.gif"
 import Employees from './components/employees/Employees'
 import AddEmployees from './components/employees/AddEmployees'
+import EditEmployee from './components/employees/EditEmployee'
 const publicRoutes = [
   '/admin/signin',
   '/admin/forgot-password',
@@ -76,9 +77,10 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path="/admin/users" Component={Users} />
           <Route path="/admin/users/add" Component={AddUser} />
           <Route path="/admin/users/edit/:userId" Component={EditUser} />
-            // Employees
+
           <Route path="/admin/employees/:deptId" Component={Employees} />
           <Route path="/admin/employees/add/:deptId" Component={AddEmployees} />
+          <Route path="/admin/employees/edit/:employeeId" Component={EditEmployee} />
         </Routes>
       </Container>
     </div>
