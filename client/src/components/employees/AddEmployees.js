@@ -15,6 +15,7 @@ function AddEmployees() {
   const { deptId } = useParams()
   const dispatch = useDispatch()
   const navigator = useNavigate()
+
   const validate = (data) => {
     const errors = {}
 
