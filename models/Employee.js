@@ -36,7 +36,7 @@ const employeeSchema = new mongoose.Schema({
   },
 })
 
-
+employeeSchema.index({ name: "text", email: "text", phone: "text", cnic: "text", designation: "text" })
 const Employee = mongoose.model("employees", employeeSchema)
 
 module.exports = Employee
