@@ -13,7 +13,6 @@ function departmentReducer(state = initialState, action) {
         records: newDepartmentsArray
       }
     case departmentActions.UPDATE_DEPT:
-      console.log(action.department)
       return {
         ...state,
         records: state.records.map((item) => {

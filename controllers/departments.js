@@ -38,7 +38,7 @@ const upload = multer({
   }
 })
 
-router.use(verifyUser)
+router.use(['/add', '/edit', '/delete'], verifyUser);
 
 router.post('/add', upload.single('logo'), async (req, res) => {
   try {
@@ -106,8 +106,8 @@ router.get("/details/:deptId", async (req, res) => {
     if (!req.params.deptId)
       throw new Error("Department Id is Required");
 
-    if (req.user.type !== userTypes.SUPER_ADMIN && (req.user.departmentId || "").toString() !== req.params.deptId)
-      throw new Error("Invalid request");
+    // if (req.user.type !== userTypes.SUPER_ADMIN && req.user.departmentId.toString() !== req.params.deptId)
+    //   throw new Error("Invalied request")
 
     const department = await Department.findById(req.params.deptId);
     res.status(200).json({ department });
@@ -144,10 +144,6 @@ router.post('/delete', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    //only super admin can see list of departments
-    // if (req.user.type !== userTypes.SUPER_ADMIN)
-    //   throw new Error('Invalid Request')
-
     const departments = await Department.find()
 
     res.status(200).json({ departments })
