@@ -142,6 +142,21 @@ router.get("/details/:employeeId", async (req, res) => {
   }
 })
 
+router.get("/publicDetails/:employeeId", async (req, res) => {
+  try {
+    if (!req.params.employeeId) throw new Error("Employee id is required")
+    if (!mongoose.isValidObjectId(req.params.employeeId)) throw new Error("Employee id is invalid")
+
+    const employee = await Employee.findById(req.params.employeeId, { _id: 1, name: 1, profilePicture: 1, departmentId: 1 })
+    if (!employee) throw new Error("invalid employee id")
+
+    res.json({ employee })
+
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+})
+
 router.post("/delete", async (req, res) => {
   try {
     if (!req.body.id) throw new Error("Employee id is required")
@@ -202,33 +217,57 @@ router.post("/search", async (req, res) => {
 })
 
 router.post("/feedback", async (req, res) => {
+  if (!req.body.employeeId)
+    throw new Error("Employee id is required")
+
+  if (!req.body.rating)
+    throw new Error("rating is required")
+
+  const employee = await Employee.findById(req.body.employeeId)
+  if (!employee) throw new Error("Employee does not exists")
+
   try {
     const {
-      employeeId,
       rating,
       name,
-      phoneNumber,
-      feedbackText
+      phone,
+      message,
+      employeeId
     } = req.body
-
-    const employee = await Employee.findById(employeeId)
-    if (!employee) throw new Error("Employee does not exists")
-
-
 
     if (rating < 0 || rating > 5)
       throw new Error("invalid request")
 
+
+
     const ratingData = Rating({
       name,
-      phoneNumber,
+      phone,
       departmentId: employee.departmentId,
       employeeId,
       rating,
-      feedbackText
+      message,
+      createdOn: new Date()
     })
     await ratingData.save()
-    res.json({ rating: ratingData })
+
+    let result = await Rating.aggregate([
+      { $match: { employeeId: { $eq: new mongoose.Types.ObjectId(employeeId) } } },
+      { $group: { _id: null, avg_value: { $avg: "$rating" } } }
+    ])
+    if (result && result.length) {
+      await Employee.findByIdAndUpdate(employeeId, { rating: result[0].avg_value.toFixed(1) })
+    }
+
+    result = await Rating.aggregate([
+      { $match: { departmentId: { $eq: employee.departmentId } } },
+      { $group: { _id: null, avg_value: { $avg: "$rating" } } }
+    ])
+    if (result && result.length) {
+      await Department.findByIdAndUpdate(employee.departmentId, { rating: result[0].avg_value.toFixed(1) })
+    }
+
+    res.json({ success: true })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -272,7 +311,7 @@ router.post("/publickSearch", async (req, res) => {
     // $regex stands for regular-expresions and options i stands for case sensitive
     const filter = { departmentId: req.body.departmentId, name: { $regex: req.body.name, $options: 'i' } }
 
-    const employees = await Employee.find(filter, { _id: 1, profilePicture: 1, name: 1, phone: 1, cnic: 1 })
+    const employees = await Employee.find(filter, { _id: 1, profilePicture: 1, departmentId: 1, name: 1, phone: 1, cnic: 1 })
 
     res.status(200).json({ employees });
 
