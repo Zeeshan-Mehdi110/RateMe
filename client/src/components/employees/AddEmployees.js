@@ -13,7 +13,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 function AddEmployees() {
   const { deptId } = useParams()
-  console.log(deptId)
   const dispatch = useDispatch()
   const navigator = useNavigate()
   const validate = (data) => {

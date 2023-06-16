@@ -9,8 +9,9 @@ const router = express.Router()
 const multer = require('multer')
 const fs = require('fs').promises
 const path = require('path')
+const { Stats } = require("fs");
 
-router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search"], verifyUser)
+router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard"], verifyUser)
 
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
@@ -123,7 +124,7 @@ router.post("/edit", upload.single("profilePicture"), async (req, res) => {
   }
 })
 
-router.post("/details/:employeeId", async (req, res) => {
+router.get("/details/:employeeId", async (req, res) => {
   try {
     if (!req.params.employeeId) throw new Error("Employee id is required")
     if (!mongoose.isValidObjectId(req.params.employeeId)) throw new Error("Employee id is invalid")
@@ -228,6 +229,53 @@ router.post("/feedback", async (req, res) => {
     })
     await ratingData.save()
     res.json({ rating: ratingData })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+})
+
+router.get('/dashboard', async (req, res) => {
+  try {
+    const stats = {
+      departments: 0,
+      employees: 0,
+      ratings: 0
+    }
+
+    if (req.user.type == userTypes.SUPER_ADMIN)
+      stats.departments = await Department.estimatedDocumentCount()
+
+    if (req.user.type == userTypes.SUPER_ADMIN) {
+      stats.employees = await Employee.estimatedDocumentCount()
+      stats.ratings = await Rating.estimatedDocumentCount()
+    } else {
+      stats.employees = await Employee.countDocuments({ departmentId: req.user.departmentId })
+      stats.ratings = await Rating.countDocuments({ departmentId: req.user.departmentId })
+    }
+
+    res.json({ stats })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+
+  }
+})
+
+router.post("/publickSearch", async (req, res) => {
+  try {
+    if (!req.body.departmentId)
+      throw new Error("departmentId is required")
+    if (!req.body.name)
+      throw new Error("name is required")
+
+    const department = await Department.findById(req.body.departmentId);
+    if (!department) throw new Error("Department does not exists");
+    // $regex stands for regular-expresions and options i stands for case sensitive
+    const filter = { departmentId: req.body.departmentId, name: { $regex: req.body.name, $options: 'i' } }
+
+    const employees = await Employee.find(filter, { _id: 1, profilePicture: 1, name: 1, phone: 1, cnic: 1 })
+
+    res.status(200).json({ employees });
+
   } catch (error) {
     res.status(400).json({ error: error.message })
   }

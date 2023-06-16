@@ -21,11 +21,14 @@ import loader from "./static/loader.gif"
 import Employees from './components/employees/Employees'
 import AddEmployees from './components/employees/AddEmployees'
 import EditEmployee from './components/employees/EditEmployee'
+import EmployeeProfile from "./components/employees/EmployeeProfile";
+
 const publicRoutes = [
   '/admin/signin',
   '/admin/forgot-password',
   '/admin/reset-password/'
 ]
+const feedbackRouts = ['/', '/employee/feedback']
 
 function App({ user, isAuthLoaded, loadAuth, userType }) {
   const location = useLocation()
@@ -34,12 +37,16 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
   }, [])
 
   if (!isAuthLoaded) return <AppPreLoader loader={loader} />
-  if (user && publicRoutes.find((url) => location.pathname.startsWith(url)))
-    return <Navigate to="/admin/dashboard" />
-  if (!user && !publicRoutes.find((url) => location.pathname.startsWith(url)))
-    return <Navigate to="/admin/signin" />
-  if (location.pathname === '/' || location.pathname === '/admin')
-    return <Navigate to="/admin/signin" />
+
+  if (user) {
+    if (user && publicRoutes.find(url => location.pathname.startsWith(url)))
+      return <Navigate to="/admin/dashboard" />
+    if (location.pathname === '/' || location.pathname.startsWith('/employee/feedback'))
+      return <Navigate to='/admin/dashboard' />
+  } else {
+    if (!publicRoutes.find(url => location.pathname.startsWith(url)) && location.pathname !== '/' && !location.pathname.startsWith('/employee/feedback'))
+      return <Navigate to='/' />
+  }
 
   if (!user) return <AppPublic />
 
@@ -81,6 +88,7 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path="/admin/employees/:deptId" Component={Employees} />
           <Route path="/admin/employees/add/:deptId" Component={AddEmployees} />
           <Route path="/admin/employees/edit/:employeeId" Component={EditEmployee} />
+          <Route path="/admin/employees/profile/:employeeId" Component={EmployeeProfile} />
         </Routes>
       </Container>
     </div>

@@ -100,7 +100,7 @@ function Employees() {
                   }
                 </TableCell>
                 <TableCell>
-                  <Link to={`/admin/employees/profile/${employee._id}`} >
+                  <Link to={`/admin/employees/profile/${employee._id}`}>
                     {employee.name}
                   </Link>
                 </TableCell>
