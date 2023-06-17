@@ -6,6 +6,7 @@ const userRoutes = require('./controllers/users')
 const departmentRoutes = require('./controllers/departments')
 const employeesRoutes = require('./controllers/employees')
 
+
 const app = express()
 app.use(cors())
 app.use(`/content`, express.static(`content/`))
