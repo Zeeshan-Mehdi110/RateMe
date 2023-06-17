@@ -10,13 +10,7 @@ const ScanQRCode = ({ employeeId, name }) => {
     setOpen(false)
   }
 
-  function onScanSuccess(decodedText, decodedResult) {
 
-    if (decodedText.includes("employee/feedback")) {
-      let url = decodedText.replace(process.env.REACT_APP_BASE_URL, "/")
-      navigator(url)
-    }
-  }
 
   function onScanFailure(error) {
   }
@@ -28,6 +22,15 @@ const ScanQRCode = ({ employeeId, name }) => {
         "reader",
         { fps: 10, qrbox: { width: 250, height: 250 } },
         /* verbose= */ false);
+
+      async function onScanSuccess(decodedText, decodedResult) {
+
+        if (decodedText.includes("employee/feedback")) {
+          let url = decodedText.replace(process.env.REACT_APP_BASE_URL, "/")
+          await html5QrcodeScanner.clear()
+          navigator(url)
+        }
+      }
       html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     }, 300);
   }

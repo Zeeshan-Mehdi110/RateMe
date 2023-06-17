@@ -11,7 +11,7 @@ const fs = require('fs').promises
 const path = require('path')
 const { Stats } = require("fs");
 
-router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard"], verifyUser)
+router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard", "/ratings"], verifyUser)
 
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
@@ -23,7 +23,9 @@ const storage = multer.diskStorage({
     }
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname)
+    const ext = path.extname(file.originalname)
+    const newFileName = Math.random().toString(36).substring(2, 7)
+    cb(null, newFileName + ext)
   }
 })
 
@@ -165,24 +167,24 @@ router.post("/delete", async (req, res) => {
     if (req.user.type !== userTypes.SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
       throw new Error("invalid request")
 
-    // if (req.user.type !== userTypes.STANDARD_ADMIN)
-    //   throw new Error("invalid request")
-
-    // const department = await Department.findOne({ userId: req.user._id })
-    // if (!department) throw new Error("Department does not exists")
-
-    // if (req.user._id.toString() !== department.userId.toString())
-    //   throw new Error("invalid request")
-
     const employee = await Employee.findById(req.body.id)
     if (!employee) throw new Error("Employee does not exists")
-    // check if the standard admin 
-    // if (department._id.toString() !== employee.departmentId.toString())
-    //   throw new Error("invalid request")
 
     await Employee.findByIdAndDelete(req.body.id)
     if (employee.profilePicture)
       await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}`)
+
+    await Rating.deleteMany({ employeeId: req.body.id })
+
+    const result = await Rating.aggregate([
+      { $match: { departmentId: { $eq: employee.departmentId } } },
+      { $group: { _id: null, avg_value: { $avg: "$rating" } } }
+    ])
+    if (result && result.length) {
+      await Department.findByIdAndUpdate(employee.departmentId, { rating: result[0].avg_value.toFixed(1) })
+    } else {
+      await Department.findByIdAndUpdate(employee.departmentId, { rating: 0 })
+    }
 
     res.json({ success: true })
   } catch (error) {
@@ -211,6 +213,33 @@ router.post("/search", async (req, res) => {
     const totalEmployees = await Employee.countDocuments(filters);
     const numOfPages = Math.ceil(totalEmployees / process.env.RECORDS_PER_PAGE)
     res.json({ department, employees, numOfPages })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+})
+
+router.post("/ratings", async (req, res) => {
+  try {
+    if (!req.body.employeeId) throw new Error("employee id is required")
+
+    const employee = await Employee.findById(req.body.employeeId)
+    if (!employee) throw new Error("employee does not exists")
+
+    if (req.user.type !== userTypes.SUPER_ADMIN && employee.departmentId !== req.user.departmentId.toString())
+      throw new Error("invalid request")
+
+    const filters = { employeeId: req.body.employeeId }
+
+
+    const page = req.body.page ? req.body.page : 1;
+    const skip = (page - 1) * process.env.RECORDS_PER_PAGE
+
+    const ratings = await Rating.find(filters, { _id: 1, name: 1, phone: 1, rating: 1, createdOn: 1, message: 1 }, { limit: process.env.RECORDS_PER_PAGE, skip, sort: { createdOn: -1 } })
+
+    const totalRatings = await Rating.countDocuments(filters);
+    const numOfPages = Math.ceil(totalRatings / process.env.RECORDS_PER_PAGE)
+
+    res.json({ ratings, numOfPages })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }

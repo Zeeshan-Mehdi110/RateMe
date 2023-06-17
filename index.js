@@ -9,6 +9,7 @@ const employeesRoutes = require('./controllers/employees')
 const app = express()
 app.use(cors())
 app.use(`/content`, express.static(`content/`))
+app.use(express.static(__dirname + `/client/build`))
 app.use(express.json())
 app.use('/api/users', userRoutes)
 app.use('/api/departments', departmentRoutes)
@@ -22,8 +23,12 @@ mongoose
     console.log(error)
   })
 
+app.all("*", (req, res) => {
+  res.sendFile(__dirname + `/client/build/index.html`)
+})
+
 app.use((err, req, res, next) => {
   if (err) res.status(400).json({ error: err.message })
   else next()
 })
-app.listen(5000, () => console.log('server is listening at port 5000'))
+app.listen(process.env.PORT || 5000, () => console.log(`server is listening at port 5000 `))
