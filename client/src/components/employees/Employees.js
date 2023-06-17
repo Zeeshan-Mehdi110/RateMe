@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton, Pagination, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Pagination, Rating, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
@@ -61,6 +61,7 @@ function Employees() {
     <Box>
       <Box display='flex' justifyContent='space-between'>
         <Typography variant='h5'>{department.name}-Employees</Typography>
+        <Rating value={department.rating} readOnly />
         <Box>
           <Button component={Link} to={`/admin/departments/edit/${deptId}`} variant='outlined' sx={{ mr: 1 }} startIcon={<EditIcon />}> Edit Department</Button>
           <Button component={Link} to={`/admin/employees/add/${deptId}`} variant='outlined' startIcon={<AddIcon />}> Add Employees</Button>

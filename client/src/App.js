@@ -22,6 +22,7 @@ import Employees from './components/employees/Employees'
 import AddEmployees from './components/employees/AddEmployees'
 import EditEmployee from './components/employees/EditEmployee'
 import EmployeeProfile from "./components/employees/EmployeeProfile";
+import NoFound404 from './components/library/NoFound404'
 
 const publicRoutes = [
   '/admin/signin',
@@ -89,6 +90,7 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path="/admin/employees/add/:deptId" Component={AddEmployees} />
           <Route path="/admin/employees/edit/:employeeId" Component={EditEmployee} />
           <Route path="/admin/employees/profile/:employeeId" Component={EmployeeProfile} />
+          <Route path='*' Component={NoFound404} />
         </Routes>
       </Container>
     </div>
