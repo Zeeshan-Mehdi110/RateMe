@@ -9,7 +9,6 @@ const router = express.Router()
 const multer = require('multer')
 const fs = require('fs').promises
 const path = require('path')
-const { Stats } = require("fs");
 
 router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard", "/ratings"], verifyUser)
 
