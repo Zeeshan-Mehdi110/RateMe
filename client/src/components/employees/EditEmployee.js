@@ -19,10 +19,11 @@ function EditEmployee() {
 
   useEffect(() => {
     dispatch(showProgressBar());
-    axios.post('/api/employees/details/' + employeeId).then(result => {
+    axios.get('/api/employees/details/' + employeeId).then(result => {
       setEmployees(result.data.employee)
       dispatch(hideProgressBar())
     }).catch((err) => {
+      dispatch(hideProgressBar())
       let message =
         err && err.response && err.response.data
           ? err.response.data.error

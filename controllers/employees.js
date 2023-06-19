@@ -131,10 +131,10 @@ router.get("/details/:employeeId", async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.employeeId)) throw new Error("Employee id is invalid")
 
     const employee = await Employee.findById(req.params.employeeId)
-    if (!employee) throw new Error("invalid employee id")
+    if (!employee) throw new Error("Invalid employee id")
 
     if (req.user.type !== userTypes.SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
-      throw new Error("invalid request")
+      throw new Error("Invalid request")
 
     res.json({ employee })
 
@@ -142,6 +142,7 @@ router.get("/details/:employeeId", async (req, res) => {
     res.status(400).json({ error: error.message })
   }
 })
+
 
 router.get("/publicDetails/:employeeId", async (req, res) => {
   try {

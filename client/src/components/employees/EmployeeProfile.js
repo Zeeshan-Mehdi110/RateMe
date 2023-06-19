@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Avatar, Box, Grid, Rating, Typography } from '@mui/material';
 import EmployeeFeedback from './EmployeeFeedback';
 
+
 export default function EmployeeProfile() {
   const { employeeId } = useParams()
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ export default function EmployeeProfile() {
           <Typography color="#706f6f"><b>Phone</b> {employee.phone}</Typography>
           <Typography color="#706f6f"><b>CNIC</b> {employee.cnic}</Typography>
           <Typography color="#706f6f"><b>Desiginatin</b> {employee.designation}</Typography>
-          <Typography color="#706f6f" justifyContent={"center"} ><Rating sx={{ mt: 1 }} readOnly precision={0.5} value={employee.rating ? employee.rating : 0} /> {`(${employee.rating})`}</Typography>
+          <Typography color="#706f6f" justifyContent={"center"} ><Rating sx={{ mt: 1 }} readOnly precision={0.5} value={employee.rating ? employee.rating : 0} /> {`(${employee?.rating})`}</Typography>
         </Grid>
       </Grid>
       <EmployeeFeedback employeeId={employeeId} />
