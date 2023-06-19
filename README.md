@@ -10,6 +10,9 @@ This project is a feedback system that allows local users to give feedback on th
 - Admins can view feedback and generate reports.
 - Departments can view their own feedback.
 
+## Demo
+[Rateme](https://rateme-zeeshan-mehdi110.vercel.app/)
+
 ## Getting Started
 
 To get started with this project, follow these steps:
