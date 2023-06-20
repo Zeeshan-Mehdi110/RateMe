@@ -9,20 +9,8 @@ const { default: axios } = require('axios')
 const multer = require('multer')
 const ejs = require('ejs')
 const router = express.Router()
-const fs = require('fs')
-const Aws = require('aws-sdk')
-
-// Configure AWS SDK with your credentials and region
-Aws.config.update({
-  accessKeyId: process.env.AWS_KEY,
-  secretAccessKey: process.env.AWS_SECRET,
-  region: process.env.AWS_REGION,
-  endpoint: `https://s3.${process.env.AWS_REGION}.amazonaws.com`
-});
-
-// Create an S3 instance
-const s3 = new Aws.S3();
-
+const fs = require('fs').promises
+const path = require('path')
 
 router.use(['/all', '/add', '/edit', '/delete', '/profile', '/profile-update'], verifyUser)
 
@@ -126,70 +114,85 @@ router.get('/profile', async (req, res) => {
   }
 })
 
-const upload = multer({ dest: 'uploads/' });
-
-
-router.post('/profile-update', upload.single('profilePicture'), async (req, res) => {
-  try {
-    if (!req.body.name) throw new Error('Name is required');
-
-    const record = {
-      name: req.body.name,
-      phoneNumber: req.body.phoneNumber,
-      modifiedOn: new Date(),
-    };
-
-    if (req.file && req.file.filename) {
-      const params = {
-        Bucket: process.env.AWS_BUCKET,
-        Key: `${req.user._id}/${req.user._id}-${req.file.originalname}`, // Generate a unique key for each file
-        Body: fs.readFileSync(req.file.path),
-      };
-
-      await s3.upload(params).promise();
-
-      // Delete the local file after uploading to S3
-      fs.unlinkSync(req.file.path);
-      record.profilePicture = params.Key; // Save the S3 object key as the profilePicture field
-
-      // Delete the previous profile picture from S3 if it exists
-      // if (req.user.profilePicture) {
-      //   const oldPicParams = {
-      //     Bucket: process.env.AWS_BUCKET,
-      //     Key: req.user.profilePicture,
-      //   };
-
-      //   await s3.deleteObject(oldPicParams).promise();
-      // }
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    try {
+      await fs.mkdir(`content/${req.user._id}`, { recursive: true })
+      cb(null, `content/${req.user._id}`)
+    } catch (error) {
+      cb(error, null)
     }
-
-    if (req.body.newPassword) {
-      if (!req.body.currentPassword) throw new Error('Current password is required');
-
-      if (!(await bcrypt.compare(req.body.currentPassword, req.user.password))) {
-        throw new Error('Current password is incorrect');
-      }
-
-      if (req.body.newPassword.length < 6) {
-        throw new Error('New password should be at least 6 characters long');
-      }
-
-      if (req.body.newPassword !== req.body.confirmPassword) {
-        throw new Error('Passwords do not match');
-      }
-
-      record.password = await bcrypt.hash(req.body.newPassword, 10);
-    }
-
-    await User.findByIdAndUpdate(req.user._id, record);
-    let user = await User.findById(req.user._id);
-    user = user.toObject();
-    delete user.password;
-    res.json({ user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
   }
-});
+})
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    // cb = callback
+    const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
+    const ext = path.extname(file.originalname).replace('.', '')
+    if (allowedTypes.includes(ext)) {
+      cb(null, true)
+    } else {
+      cb(new Error('File type not allowed'), false)
+    }
+  }
+})
+
+router.post(
+  '/profile-update',
+  upload.single('profilePicture'),
+  async (req, res) => {
+    try {
+      if (!req.body.name) throw new Error('Name is required')
+      const record = {
+        name: req.body.name,
+        phoneNumber: req.body.phoneNumber,
+        modifiedOn: new Date()
+      }
+      if (req.file && req.file.filename) {
+        record.profilePicture = req.file.filename
+        if (
+          req.user.profilePicture &&
+          req.user.profilePicture !== req.file.filename
+        ) {
+          const oldPicPath = `content/${req.user._id}/${req.user.profilePicture}`
+          await fs.unlink(oldPicPath)
+        }
+      }
+      record.profilePicture = req.file.filename
+      if (req.body.newPassword) {
+        if (!req.body.currentPassword)
+          throw new Error('Current password is required')
+        if (
+          !(await bcrypt.compare(
+            req.body.currentPassword,
+            req.body.newPassword
+          ))
+        )
+          throw new Error('Current password is incorrect')
+        if (req.body.newPassword.length < 6)
+          throw new Error(
+            'New password is should be at least 6 characters long'
+          )
+        if (req.body.newPassword !== req.body.confirmPassword)
+          throw new Error('Passwords do not match')
+        record.password = await bcrypt.hash(req.body.newPassword, 10)
+      }
+
+      await User.findByIdAndUpdate(req.user._id, record)
+      let user = await User.findById(req.user._id)
+      user = user.toObject()
+      delete user.password
+      res.json({ user })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  }
+)
 
 router.post('/signin', async (req, res) => {
   try {
