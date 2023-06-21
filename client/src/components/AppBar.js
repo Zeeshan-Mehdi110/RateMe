@@ -87,10 +87,7 @@ const AppBar = () => {
           <Box>
             <Tooltip title="Open Settings">
               <IconButton onClick={openMenu}>
-                <Avatar
-                  alt="Profile Picture"
-                  src={`https://s3.ap-southeast-2.amazonaws.com/${user.profilePicture}`}
-                />
+                <Avatar sx={{ "width": "32px", "height": "32px" }} alt="Profile Picture" src={user?.profilePicture} />
               </IconButton>
             </Tooltip>
             <Menu

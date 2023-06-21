@@ -127,7 +127,7 @@ router.get('/profile', async (req, res) => {
   }
 })
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer();
 
 
 router.post('/profile-update', upload.single('profilePicture'), async (req, res) => {
@@ -140,18 +140,17 @@ router.post('/profile-update', upload.single('profilePicture'), async (req, res)
       modifiedOn: new Date(),
     };
 
-    if (req.file && req.file.filename) {
+    if (req.file) {
       const params = {
         Bucket: process.env.AWS_BUCKET,
         Key: `${req.user._id}/${req.user._id}-${req.file.originalname}`, // Generate a unique key for each file
-        Body: fs.readFileSync(req.file.path),
+        Body: req.file.buffer,
       };
 
-      await s3.upload(params).promise();
-
+      const result = await s3.upload(params).promise();
       // Delete the local file after uploading to S3
-      fs.unlinkSync(req.file.path);
-      record.profilePicture = params.Key; // Save the S3 object key as the profilePicture field
+      // fs.unlinkSync(req.file.path);
+      record.profilePicture = result.Location; // Save the S3 object key as the profilePicture field
 
       // Delete the previous profile picture from S3 if it exists
       // if (req.user.profilePicture) {
