@@ -4,4 +4,4 @@ content/
 
 # dependencies
 node_modules/
-env/
+.env
