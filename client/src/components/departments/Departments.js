@@ -63,13 +63,7 @@ function Departments({ departments, loadDepartments }) {
             <TableRow key={dept._id}>
               <TableCell>
                 {dept.logo && (
-                  <Avatar
-                    alt={dept.name}
-                    src={
-                      process.env.REACT_APP_BASE_URL +
-                      `content/departments/${dept.logo}`
-                    }
-                  />
+                  <Avatar sx={{ "width": "32px", "height": "32px" }} alt="L" src={dept?.logo} />
                 )}
               </TableCell>
               <TableCell>

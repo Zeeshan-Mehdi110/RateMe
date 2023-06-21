@@ -7,29 +7,24 @@ const Department = require("../models/Department");
 const Rating = require("../models/Rating");
 const router = express.Router()
 const multer = require('multer')
-const fs = require('fs').promises
 const path = require('path')
+const Aws = require('aws-sdk')
+const uuid = require("uuid");
 
 router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard", "/ratings"], verifyUser)
 
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    try {
-      await fs.mkdir(`content/${req.body.deptId}`, { recursive: true })
-      cb(null, `content/${req.body.deptId}`)
-    } catch (error) {
-      cb(error, null)
-    }
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname)
-    const newFileName = Math.random().toString(36).substring(2, 7)
-    cb(null, newFileName + ext)
-  }
-})
+// Configure AWS SDK with your credentials and region
+Aws.config.update({
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SECRET,
+  region: process.env.AWS_REGION,
+  endpoint: `https://s3.${process.env.AWS_REGION}.amazonaws.com`
+});
+
+// Create an S3 instance
+const s3 = new Aws.S3();
 
 const upload = multer({
-  storage,
   fileFilter: (req, file, cb) => {
     // cb = callback
     const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
@@ -42,7 +37,7 @@ const upload = multer({
   }
 })
 
-router.post("/add", upload.single("profilePicture"), async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     // only standard Admin can add Employees to his own departments only
     if (req.user.type !== userTypes.SUPER_ADMIN && req.body.deptId !== req.user.departmentId.toString())
@@ -65,7 +60,6 @@ router.post("/add", upload.single("profilePicture"), async (req, res) => {
       phone,
       cnic,
       designation,
-      profilePicture: req.file ? req.file.filename : "",
       createdOn: new Date(),
       modifiedOn: new Date()
     })
@@ -103,22 +97,35 @@ router.post("/edit", upload.single("profilePicture"), async (req, res) => {
       designation,
       modifiedOn: new Date()
     }
-    if (req.file && req.file.filename) {
-      record.profilePicture = req.file.filename
-      if (employee.profilePicture && employee.profilePicture !== req.file.filename) {
-        fs.access(`./content/${employee.departmentId}/${employee.profilePicture}`, require("fs").constants.F_OK)
-          .then(async () => {
-            await fs.unlink(`./content/${employee.departmentId}/${employee.profilePicture}`)
-          }).catch(err => {
 
-          })
-      }
+    if (req.file) {
+      const uniqueFilename = `employees/${uuid.v4()}-${req.file.originalname}`;
+      const params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: uniqueFilename, // Generate a unique key for each file
+        Body: req.file.buffer,
+      };
+
+      const result = await s3.upload(params).promise();
+      // Delete the local file after uploading to S3
+      // fs.unlinkSync(req.file.path);
+      record.profilePicture = result.Location; // Save the S3 object key as the profilePicture field
+
+      // Delete the previous profile picture from S3 if it exists
+      // if (req.user.profilePicture) {
+      //   const oldPicParams = {
+      //     Bucket: process.env.AWS_BUCKET,
+      //     Key: req.user.profilePicture,
+      //   };
+
+      //   await s3.deleteObject(oldPicParams).promise();
+      // }
     }
 
     await Employee.findByIdAndUpdate(req.body.id, record)
     const updatedEmployee = await Employee.findById(req.body.id);
 
-    res.json({ employee: updatedEmployee })
+    res.json({ success: true, employee: updatedEmployee })
 
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -171,8 +178,6 @@ router.post("/delete", async (req, res) => {
     if (!employee) throw new Error("Employee does not exists")
 
     await Employee.findByIdAndDelete(req.body.id)
-    if (employee.profilePicture)
-      await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}`)
 
     await Rating.deleteMany({ employeeId: req.body.id })
 
