@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { connect, useDispatch } from 'react-redux'
 import { showError, showSuccess } from '../store/actions/alertActions'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { Field, Form } from 'react-final-form'
 import TextInput from './library/TextInput'
 import {
@@ -12,7 +12,7 @@ import {
 import FileInput from './library/FileInput'
 import { updateUser } from '../store/actions/authActions'
 
-const AccountSettings = ({ user, loading }) => {
+const AccountSettings = ({ user }) => {
   const dispatch = useDispatch()
   return (
     <Box

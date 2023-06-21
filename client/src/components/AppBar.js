@@ -18,11 +18,14 @@ import { signOut } from '../store/actions/authActions'
 import ProgressBar from './library/ProgressBar'
 import StarsIcon from '@mui/icons-material/Stars'
 import { userTypes } from '../utils/constants'
+
+
 const AppBar = () => {
   const user = useSelector((state) => state.auth.user)
   const userType = user.type
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
+
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -33,6 +36,9 @@ const AppBar = () => {
     dispatch(signOut())
     closeMenu()
   }
+
+
+
   return (
     <MuiAppBar>
       <Container maxWidth="xl">
@@ -81,13 +87,7 @@ const AppBar = () => {
           <Box>
             <Tooltip title="Open Settings">
               <IconButton onClick={openMenu}>
-                <Avatar
-                  alt="Profile Picture"
-                  src={
-                    process.env.REACT_APP_BASE_URL +
-                    `content/${user._id}/${user.profilePicture}`
-                  }
-                />
+                <Avatar sx={{ "width": "32px", "height": "32px" }} alt="Profile Picture" src={user?.profilePicture} />
               </IconButton>
             </Tooltip>
             <Menu
