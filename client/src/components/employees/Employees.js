@@ -95,10 +95,7 @@ function Employees() {
             employees.map(employee => (
               <TableRow key={employee._id}>
                 <TableCell>
-                  {
-                    <Avatar
-                      src={process.env.REACT_APP_BASE_URL + 'content/' + department._id + '/' + employee.profilePicture} />
-                  }
+                  <Avatar sx={{ "width": "32px", "height": "32px" }} alt="P" src={employee?.profilePicture} />
                 </TableCell>
                 <TableCell>
                   <Link to={`/admin/employees/profile/${employee._id}`}>

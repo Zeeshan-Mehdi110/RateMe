@@ -6,39 +6,38 @@ const { verifyUser } = require('../middlewares/auth')
 const { userTypes } = require('../utils/util')
 const multer = require('multer')
 const fs = require('fs').promises
-const path = require('path')
 const Rating = require('../models/Rating')
 const Employee = require('../models/Employee')
-
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    try {
-      await fs.mkdir(`content/departments/`, {
-        recursive: true
-      })
-      cb(null, `content/departments/`)
-    } catch (err) {
-      cb(err, null)
-    }
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  }
-})
-
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['jpg', 'png', 'gif', 'bmp', 'jpeg']
-    const ext = path.extname(file.originalname).replace('.', '')
-    if (allowedTypes.includes(ext)) cb(null, true)
-    else {
-      cb(new Error('File type is not allowed'), false)
-    }
-  }
-})
+const Aws = require('aws-sdk')
+const uuid = require("uuid");
+const path = require("path")
 
 router.use(['/add', '/edit', '/delete'], verifyUser);
+
+// Configure AWS SDK with your credentials and region
+Aws.config.update({
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SECRET,
+  region: process.env.AWS_REGION,
+  endpoint: `https://s3.${process.env.AWS_REGION}.amazonaws.com`
+});
+
+// Create an S3 instance
+const s3 = new Aws.S3();
+
+// Multer Configuration
+const upload = multer({
+  fileFilter: (req, file, cb) => {
+    // cb = callback
+    const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
+    const ext = path.extname(file.originalname).replace('.', '')
+    if (allowedTypes.includes(ext)) {
+      cb(null, true)
+    } else {
+      cb(new Error('File type not allowed'), false)
+    }
+  }
+})
 
 router.post('/add', upload.single('logo'), async (req, res) => {
   try {
@@ -52,8 +51,29 @@ router.post('/add', upload.single('logo'), async (req, res) => {
       phone: req.body.phone,
       address: req.body.address
     }
-    if (req.file && req.file.filename) {
-      record.logo = req.file.filename
+
+    if (req.file) {
+      const uniqueFilename = `departments/${uuid.v4()}-${req.file.originalname}`;
+      const params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: uniqueFilename, // Generate a unique key for each file
+        Body: req.file.buffer,
+      };
+
+      const result = await s3.upload(params).promise();
+      // Delete the local file after uploading to S3
+      // fs.unlinkSync(req.file.path);
+      record.logo = result.Location; // Save the S3 object key as the profilePicture field
+
+      // Delete the previous profile picture from S3 if it exists
+      // if (req.user.profilePicture) {
+      //   const oldPicParams = {
+      //     Bucket: process.env.AWS_BUCKET,
+      //     Key: req.user.profilePicture,
+      //   };
+
+      //   await s3.deleteObject(oldPicParams).promise();
+      // }
     }
 
     const department = new Department(record)
@@ -86,10 +106,29 @@ router.post('/edit', upload.single('logo'), async (req, res) => {
     }
     if (req.user.type === userTypes.SUPER_ADMIN)
       record.name = req.body.name
-    if (req.file && req.file.filename) {
-      record.logo = req.file.filename
-      if (department.logo && department.logo !== req.file.fieldname)
-        await fs.unlink('content/departments/' + department.logo)
+
+    if (req.file) {
+      const uniqueFilename = `departments/${uuid.v4()}-${req.file.originalname}`;
+      const params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: uniqueFilename, // Generate a unique key for each file
+        Body: req.file.buffer,
+      };
+
+      const result = await s3.upload(params).promise();
+      // Delete the local file after uploading to S3
+      // fs.unlinkSync(req.file.path);
+      record.logo = result.Location; // Save the S3 object key as the profilePicture field
+
+      // Delete the previous profile picture from S3 if it exists
+      // if (req.user.profilePicture) {
+      //   const oldPicParams = {
+      //     Bucket: process.env.AWS_BUCKET,
+      //     Key: req.user.profilePicture,
+      //   };
+
+      //   await s3.deleteObject(oldPicParams).promise();
+      // }
     }
 
     await Department.findByIdAndUpdate(req.body.id, record)
@@ -130,15 +169,11 @@ router.post('/delete', async (req, res) => {
     const department = await Department.findById(req.body.id)
     if (!department) throw new Error('Department does not exists')
 
-    if (department.logo) {
-      await fs.unlink(`content/departments/${department.logo}`)
-    }
-
     await Department.findByIdAndDelete(req.body.id)
 
     await Employee.deleteMany({ departmentId: req.body.id })
     await Rating.deleteMany({ departmentId: req.body.id })
-    await fs.rmdir(`content/${req.body.id}`, { recursive: true })
+    // await fs.rmdir(`content/${req.body.id}`, { recursive: true })
     res.json({ success: true })
   } catch (error) {
     res.status(400).json({ error: error.message })

@@ -9,8 +9,11 @@ const { default: axios } = require('axios')
 const multer = require('multer')
 const ejs = require('ejs')
 const router = express.Router()
-const fs = require('fs')
 const Aws = require('aws-sdk')
+const uuid = require("uuid");
+const path = require("path")
+
+
 
 
 // Configure AWS SDK with your credentials and region
@@ -23,6 +26,20 @@ Aws.config.update({
 
 // Create an S3 instance
 const s3 = new Aws.S3();
+
+// Multer Configuration
+const upload = multer({
+  fileFilter: (req, file, cb) => {
+    // cb = callback
+    const allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
+    const ext = path.extname(file.originalname).replace('.', '')
+    if (allowedTypes.includes(ext)) {
+      cb(null, true)
+    } else {
+      cb(new Error('File type not allowed'), false)
+    }
+  }
+})
 
 
 router.use(['/all', '/add', '/edit', '/delete', '/profile', '/profile-update'], verifyUser)
@@ -108,7 +125,6 @@ router.post('/delete', async (req, res) => {
       throw new Error("invalid request")
     }
 
-
     await User.findByIdAndDelete(req.body.id)
     res.json({ success: true })
   } catch (error) {
@@ -127,8 +143,6 @@ router.get('/profile', async (req, res) => {
   }
 })
 
-const upload = multer();
-
 
 router.post('/profile-update', upload.single('profilePicture'), async (req, res) => {
   try {
@@ -141,9 +155,10 @@ router.post('/profile-update', upload.single('profilePicture'), async (req, res)
     };
 
     if (req.file) {
+      const uniqueFilename = `users/${uuid.v4()}-${req.file.originalname}`;
       const params = {
         Bucket: process.env.AWS_BUCKET,
-        Key: `${req.user._id}/${req.user._id}-${req.file.originalname}`, // Generate a unique key for each file
+        Key: uniqueFilename, // Generate a unique key for each file
         Body: req.file.buffer,
       };
 

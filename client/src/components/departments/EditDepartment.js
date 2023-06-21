@@ -55,7 +55,7 @@ function EditDepartment() {
       if (result.data.department) {
         dispatch(updateDepartment(result.data.department))
         dispatch(showSuccess('Department Updated successfully'))
-        navigator(`/admin/employees/${deptId}`)
+        navigator(`/admin/departments`)
       }
       dispatch(hideProgressBar())
     } catch (error) {

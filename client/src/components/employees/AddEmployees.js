@@ -6,7 +6,6 @@ import {
   hideProgressBar,
   showProgressBar
 } from '../../store/actions/progressBarAction'
-import FileInput from '../library/FileInput'
 import { showError, showSuccess } from '../../store/actions/alertActions'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -30,7 +29,7 @@ function AddEmployees() {
   const handleSubmit = async (data, form) => {
     try {
       dispatch(showProgressBar())
-      let result = await axios.postForm('api/employees/add', { deptId, ...data })
+      let result = await axios.post('api/employees/add', { deptId, ...data })
       if (result.data.success) {
         dispatch(showSuccess('Employees added successfully'))
         navigator(`/admin/employees/${deptId}`)
@@ -92,13 +91,6 @@ function AddEmployees() {
               name="designation"
               placeholder="Enter designation"
             />
-            <Field
-              component={FileInput}
-              type="file"
-              name="profilePicture"
-              inputProps={{ accept: 'image/*' }}
-            />
-
             <Button
               sx={{ marginTop: '20px' }}
               variant="outlined"
