@@ -21,7 +21,8 @@ function Feedback() {
     dispatch(showProgressBar())
     axios.get('/api/employees/publicDetails/' + employeeId).then((result) => {
       dispatch(hideProgressBar())
-      setEmployee(result.data.employee)
+      if (result.data.employee)
+        setEmployee(result.data.employee)
     }).catch(error => {
       let message = error && error.response && error.response.data ? error.response.data.error : error.message;
       dispatch(hideProgressBar())
@@ -63,7 +64,7 @@ function Feedback() {
 
         <Grid container spacing={4} display={"flex"} flexDirection={"row"}>
           <Grid item xs={12} md={8} mx="auto">
-            <Avatar variant="square" sx={{ width: "100%", height: "auto" }} src={process.env.REACT_APP_BASE_URL + 'content/' + employee.departmentId + '/' + employee.profilePicture} />
+            <Avatar variant="square" sx={{ width: "100%", height: "90%", objectFit: "contain" }} src={employee.profilePicture} />
             <Typography sx={{ mt: 3, }} textAlign="center" variant="h5">{employee.name}</Typography>
           </Grid>
           <Grid item xs={12} md={8} mx="auto">

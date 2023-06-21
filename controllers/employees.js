@@ -60,6 +60,7 @@ router.post("/add", async (req, res) => {
       phone,
       cnic,
       designation,
+      profilePicture: "",
       createdOn: new Date(),
       modifiedOn: new Date()
     })

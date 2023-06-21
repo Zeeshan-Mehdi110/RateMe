@@ -99,7 +99,7 @@ export default function Home() {
             <Grid item lg={2} md={3} sm={4} xs={12} key={employee._id} >
               <Card sx={{ width: '100%', height: '100%' }} >
                 <CardActionArea component={Link} to={`/employee/feedback/${employee._id}`} >
-                  <Avatar variant='square' sx={{ width: "100%", height: "auto" }} src={process.env.REACT_APP_BASE_URL + 'content/' + employee.departmentId + '/' + employee.profilePicture} />
+                  <Avatar variant='square' sx={{ width: "100%", height: "auto" }} src={employee.profilePicture} />
                   <CardContent>
                     <Typography variant='h6' textAlign={"center"} component={"div"} >
                       {employee.name}
