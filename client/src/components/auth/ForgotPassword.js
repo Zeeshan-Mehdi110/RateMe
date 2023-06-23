@@ -10,76 +10,78 @@ const ForgotPassword = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   return (
-    <Box
-      p={3}
-      textAlign={'center'}
-      bgcolor="#fff"
-      boxShadow={'0px 0px 17px 5px #dbdada'}
-      minWidth={'350px'}
-    >
-      <Typography textAlign={'center'} variant="h5" fontWeight={'bold'} pb={1}>
-        Rate Me
-      </Typography>
-      <Form
-        onSubmit={(data) => {
-          return axios
-            .post('api/users/forgot-password', data)
-            .then(({ data }) => {
-              if (data.success) {
-                navigate('/admin/signin')
-                dispatch(
-                  showSuccess(
-                    'An Email has been sent to your inbox. Please check your email and reset your password'
-                  )
-                )
-              }
-            })
-            .catch((err) => {
-              let message =
-                err && err.response && err.response.data
-                  ? err.response.data.error
-                  : err.message
-              dispatch(showError(message))
-            })
-        }}
-        validate={(data) => {
-          const errors = {}
-          if (!data.email) {
-            errors.email = 'Email Address Required'
-          } else if (
-            !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
-          ) {
-            errors.email = 'Invalid email address'
-          }
-          return errors
-        }}
+    <Box display={'flex'} justifyContent={'center'} alignItems={"center"} height="100%">
+      <Box
+        p={3}
+        textAlign={'center'}
+        bgcolor="#fff"
+        boxShadow={'0px 0px 17px 5px #dbdada'}
+        minWidth={'350px'}
       >
-        {(props) => {
-          const { invalid, submitting } = props
-          return (
-            <form onSubmit={props.handleSubmit} action="">
-              <Field
-                name="email"
-                type="email"
-                placeholder="Enter email address"
-                component={TextInput}
-                autoFocus
-              />
-              <Button type="submit" disabled={submitting || invalid}>
-                Reset Password{' '}
-                {submitting && (
-                  <CircularProgress size={20} style={{ marginLeft: '10px' }} />
-                )}{' '}
-              </Button>
-              <Box mt={2}>
-                <Link style={{ textDecoration: 'none' }} to="/admin/signin">
-                  Sign In
-                </Link>
-              </Box>
-            </form>
-          )
-        }}
-      </Form>
+        <Typography textAlign={'center'} variant="h5" fontWeight={'bold'} pb={1}>
+          Rate Me
+        </Typography>
+        <Form
+          onSubmit={(data) => {
+            return axios
+              .post('api/users/forgot-password', data)
+              .then(({ data }) => {
+                if (data.success) {
+                  navigate('/admin/signin')
+                  dispatch(
+                    showSuccess(
+                      'An Email has been sent to your inbox. Please check your email and reset your password'
+                    )
+                  )
+                }
+              })
+              .catch((err) => {
+                let message =
+                  err && err.response && err.response.data
+                    ? err.response.data.error
+                    : err.message
+                dispatch(showError(message))
+              })
+          }}
+          validate={(data) => {
+            const errors = {}
+            if (!data.email) {
+              errors.email = 'Email Address Required'
+            } else if (
+              !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
+            ) {
+              errors.email = 'Invalid email address'
+            }
+            return errors
+          }}
+        >
+          {(props) => {
+            const { invalid, submitting } = props
+            return (
+              <form onSubmit={props.handleSubmit} action="">
+                <Field
+                  name="email"
+                  type="email"
+                  placeholder="Enter email address"
+                  component={TextInput}
+                  autoFocus
+                />
+                <Button type="submit" disabled={submitting || invalid}>
+                  Reset Password{' '}
+                  {submitting && (
+                    <CircularProgress size={20} style={{ marginLeft: '10px' }} />
+                  )}{' '}
+                </Button>
+                <Box mt={2}>
+                  <Link style={{ textDecoration: 'none' }} to="/admin/signin">
+                    Sign In
+                  </Link>
+                </Box>
+              </form>
+            )
+          }}
+        </Form>
+      </Box>
     </Box>
   )
 }

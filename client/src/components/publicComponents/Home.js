@@ -11,6 +11,7 @@ import ProgressBar from '../library/ProgressBar';
 import { Link } from 'react-router-dom';
 import AlertMessage from '../library/AlertMessage';
 import ScanQRCode from './ScanQRCode';
+import Header from '../library/Header';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -61,62 +62,67 @@ export default function Home() {
   }, [departments])
 
   return (
-    <Box width='100%' minHeight='90%' p={4} alignSelf={"baseline"} >
-      <Form
-        onSubmit={searchEmploys}
-        validate={validate}
-        initialValues={{
-          departmentId: 0
+    <Box>
+      <Header />
+      <Box mt={5} >
+        <Box display={"flex"} justifyContent={"space-evenly"} >
+          <Form
+            onSubmit={searchEmploys}
+            validate={validate}
+            initialValues={{
+              departmentId: 0
 
-        }}
-        render={({
-          handleSubmit,
-          submitting,
-          invalid,
-        }) => (
-          <form onSubmit={handleSubmit} method="post" encType="multipart/form-data" >
-            <Grid container spacing={2}>
-              <Grid item md={4} xs={12}>
-                <Field size='small' component={SelectInput} type='text' name="departmentId" options={deptOptions} />
-              </Grid>
-              <Grid item md={4} xs={12}>
-                <Field component={TextInput} type='text' name="name" placeholder="Name" autoFocus />
-              </Grid>
-              <Grid item md={4} xs={12}>
-                <Button variant="outlined" type="submit" disabled={invalid || submitting}>Search</Button>
-                <ScanQRCode />
-              </Grid>
-            </Grid>
-          </form>
-        )}
-      />
-      <ProgressBar />
-      <AlertMessage />
-
-      <Grid container spacing={2} >
-        {
-          employees.map(employee => (
-            <Grid item lg={2} md={3} sm={4} xs={12} key={employee._id} >
-              <Card sx={{ width: '100%', height: '100%' }} >
-                <CardActionArea component={Link} to={`/employee/feedback/${employee._id}`} >
-                  <Avatar variant='square' sx={{ width: "100%", height: "auto" }} src={employee.profilePicture} />
-                  <CardContent>
-                    <Typography variant='h6' textAlign={"center"} component={"div"} >
-                      {employee.name}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))
-        }
-      </Grid>
-      {
-        isSearchDone && employees.length === 0 &&
-        <Box mt={5} textAlign={"center"} >
-          <Typography>no employees found</Typography>
+            }}
+            render={({
+              handleSubmit,
+              submitting,
+              invalid,
+            }) => (
+              <form onSubmit={handleSubmit} method="post" encType="multipart/form-data" style={{ "width": "90%" }} >
+                <Grid container spacing={2} >
+                  <Grid item md={4} xs={12}>
+                    <Field size='small' component={SelectInput} type='text' name="departmentId" options={deptOptions} />
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Field component={TextInput} type='text' name="name" placeholder="Name" />
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Button variant="outlined" type="submit" disabled={invalid || submitting}>Search</Button>
+                    <ScanQRCode />
+                  </Grid>
+                </Grid>
+              </form>
+            )}
+          />
         </Box>
-      }
+        <ProgressBar />
+        <AlertMessage />
+
+        <Grid container spacing={2} >
+          {
+            employees.map(employee => (
+              <Grid item lg={2} md={3} sm={4} xs={12} key={employee._id} >
+                <Card sx={{ width: '100%', height: '100%' }} >
+                  <CardActionArea component={Link} to={`/employee/feedback/${employee._id}`} >
+                    <Avatar variant='square' sx={{ width: "100%", height: "auto" }} src={employee.profilePicture} />
+                    <CardContent>
+                      <Typography variant='h6' textAlign={"center"} component={"div"} >
+                        {employee.name}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))
+          }
+        </Grid>
+        {
+          isSearchDone && employees.length === 0 &&
+          <Box mt={5} textAlign={"center"} >
+            <Typography>no employees found</Typography>
+          </Box>
+        }
+      </Box>
     </Box>
   )
 

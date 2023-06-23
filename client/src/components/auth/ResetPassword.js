@@ -14,90 +14,92 @@ const ResetPassword = () => {
   useEffect(() => {
     axios
       .post('/users/verify-reset-code', { code: resetCode })
-      .then((result) => {})
+      .then((result) => { })
       .catch((err) => {
         dispatch(showError('invalid request'))
       })
   }, [])
   return (
-    <Box
-      p={3}
-      textAlign={'center'}
-      bgcolor="#fff"
-      boxShadow={'0px 0px 17px 5px #dbdada'}
-      minWidth={'350px'}
-    >
-      <Typography textAlign={'center'} variant="h5" fontWeight={'bold'} pb={1}>
-        Rate Me
-      </Typography>
-      <Form
-        onSubmit={(data) => {
-          return axios
-            .post('api/users/reset-password', { ...data, code: resetCode })
-            .then(({ data }) => {
-              if (data.success) {
-                dispatch(
-                  showSuccess(
-                    'Password reset successfully . Please Signin with new password'
-                  )
-                )
-                navigator('/admin/signin')
-              }
-            })
-            .catch((err) => {
-              let message =
-                err && err.response && err.response.data
-                  ? err.response.data.error
-                  : err.message
-              dispatch(showError(message))
-            })
-        }}
-        validate={(data) => {
-          const errors = {}
-          if (!data.newPassword) {
-            errors.newPassword = 'Password Required'
-          } else if (data.newPassword.length < 6) {
-            errors.newPassword = 'password should be at least 6 characters long'
-          }
-          if (!data.confirmPassword) {
-            errors.confirmPassword = 'Confirm Password Required'
-          } else if (data.newPassword !== data.confirmPassword) {
-            errors.confirmPassword = 'Passwords do not match'
-          }
-          return errors
-        }}
+    <Box display={'flex'} justifyContent={'center'} alignItems={"center"} height="100%">
+      <Box
+        p={3}
+        textAlign={'center'}
+        bgcolor="#fff"
+        boxShadow={'0px 0px 17px 5px #dbdada'}
+        minWidth={'350px'}
       >
-        {(props) => {
-          const { submitting, invalid } = props
-          return (
-            <form onSubmit={props.handleSubmit} action="">
-              <Field
-                name="newPassword"
-                type="password"
-                placeholder="Enter new Password"
-                component={TextInput}
-              />
-              <Field
-                name="confirmPassword"
-                type="password"
-                placeholder="Enter Confirm Password"
-                component={TextInput}
-              />
-              <Button type="submit" disabled={submitting || invalid}>
-                Change Password{' '}
-                {submitting && (
-                  <CircularProgress size={20} style={{ marginLeft: '10px' }} />
-                )}{' '}
-              </Button>
-              <Box mt={2}>
-                <Link style={{ textDecoration: 'none' }} to="/admin/signin">
-                  Sign In
-                </Link>
-              </Box>
-            </form>
-          )
-        }}
-      </Form>
+        <Typography textAlign={'center'} variant="h5" fontWeight={'bold'} pb={1}>
+          Rate Me
+        </Typography>
+        <Form
+          onSubmit={(data) => {
+            return axios
+              .post('api/users/reset-password', { ...data, code: resetCode })
+              .then(({ data }) => {
+                if (data.success) {
+                  dispatch(
+                    showSuccess(
+                      'Password reset successfully . Please Signin with new password'
+                    )
+                  )
+                  navigator('/admin/signin')
+                }
+              })
+              .catch((err) => {
+                let message =
+                  err && err.response && err.response.data
+                    ? err.response.data.error
+                    : err.message
+                dispatch(showError(message))
+              })
+          }}
+          validate={(data) => {
+            const errors = {}
+            if (!data.newPassword) {
+              errors.newPassword = 'Password Required'
+            } else if (data.newPassword.length < 6) {
+              errors.newPassword = 'password should be at least 6 characters long'
+            }
+            if (!data.confirmPassword) {
+              errors.confirmPassword = 'Confirm Password Required'
+            } else if (data.newPassword !== data.confirmPassword) {
+              errors.confirmPassword = 'Passwords do not match'
+            }
+            return errors
+          }}
+        >
+          {(props) => {
+            const { submitting, invalid } = props
+            return (
+              <form onSubmit={props.handleSubmit} action="">
+                <Field
+                  name="newPassword"
+                  type="password"
+                  placeholder="Enter new Password"
+                  component={TextInput}
+                />
+                <Field
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Enter Confirm Password"
+                  component={TextInput}
+                />
+                <Button type="submit" disabled={submitting || invalid}>
+                  Change Password{' '}
+                  {submitting && (
+                    <CircularProgress size={20} style={{ marginLeft: '10px' }} />
+                  )}{' '}
+                </Button>
+                <Box mt={2}>
+                  <Link style={{ textDecoration: 'none' }} to="/admin/signin">
+                    Sign In
+                  </Link>
+                </Box>
+              </form>
+            )
+          }}
+        </Form>
+      </Box>
     </Box>
   )
 }
