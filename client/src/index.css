@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
 html , body {
   height: 100%;
 }
@@ -11,10 +14,32 @@ body {
   background-color: #ececec;
 }
 
+
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 #root {
   height: 100%;
+}
+
+:root{
+  --lato: "Lato";
+  --josefin : "Josefin Sans"
+  --light-purple: #F2F0FF;
+  --soft-blue: #8A8FB9;
+  --heading-color: #1A0B5B;
+  --product-background: #F6F7FB;
+  --product-background-hover: #F7F7F7;
+    --light-gray: #B7BACB;
+    --light-blue : #EEEFFB;
+  --light-blue2 : #F5F6F8;
+  --light-gray: #B7BACB;
+  --light-pink : #FFF6FB;
+  --bread-crumbs : #F6F5FF;
+  --orange: #FF9437;
+  --brown: #FFBF95;
+  --green: #33D221;
+  --product-description-background: #F9F8FE;
 }
