@@ -1,29 +1,10 @@
 import { Box, Grid, Typography } from "@mui/material";
-import Slider from "react-slick";
 import department1 from "../../static/state3.jpeg"
+import department2 from "../../static/state.jpeg"
 const About = () => {
-  let settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    autoplay: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    appendDots: dots => (
-      <div
-        style={{
-          color: '#FB2E86',
-          bottom: '10px',
-          fontSize: '20px'
-        }}
-      >
-        <ul style={{ margin: "0px", fontSize: '20px' }}> {dots} </ul>
-      </div>
-    )
-  };
+
   return (
-    <Slider {...settings} >
+    <>
       <Grid container sx={{ display: 'flex !important', padding: { xs: "20px", sm: "0px" }, 'backgroundColor': '#F2F0FF', "marginTop": "36px" }}>
         <Grid item md={6} xs={12} sx={{ display: 'flex', textAlign: "center", 'alignItems': 'center' }} >
           <Box dipslay="flex" alignItems="center" >
@@ -38,11 +19,40 @@ const About = () => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item md={6} xs={12} >
+        <Grid item md={6} xs={12} textAlign={"center"} >
           <img src={department1} style={{ "maxWidth": '100%' }} />
         </Grid>
       </Grid>
-    </Slider>
+      <Grid container sx={{ display: 'flex !important', paddingX: { xs: "20px", "md": "0px" }, "flexDirection": { xs: "column-reverse", md: "row" }, 'backgroundColor': '#F2F0FF' }}>
+        <Grid item md={6} xs={12} textAlign={"center"} sx={{ "marginTop": { xs: "25px", sm: "0px" } }} >
+          <img src={department2} style={{ "maxWidth": '100%' }} />
+        </Grid>
+        <Grid item md={6} xs={12} sx={{ display: 'flex', textAlign: "center", 'alignItems': 'center' }} >
+          <Box dipslay="flex" alignItems="center" >
+            <Typography component="div" sx={{ 'fontFamily': 'Josef Sans', "fontSize": { xs: "28px", md: "40px" }, 'fontWeight': 'bold', 'lineHeight': '70px', 'letterSpacing': '1.5' }}>
+              Features
+            </Typography>
+            <Typography component="ul" sx={{ 'color': '#FB2E86', "textAlign": "justify", 'fontFamily': 'Lato', 'fontStyle': 'normal', 'fontWeight': '700', 'fontSize': '16px', 'lineHeight': '28px' }}>
+              <Typography component="li" >
+                Public can give feedback by scanning a QR code.
+              </Typography>
+              <Typography component="li" >
+                Feedback is stored in a database for analysis.
+              </Typography>
+              <Typography component="li" >
+                Public can also give rating to employees.
+              </Typography>
+              <Typography component="li">
+                Admins can add new employee and Departments.
+              </Typography>
+              <Typography component="li">
+                Admins and employees List is also availble with pagination.
+              </Typography>
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    </>
   )
 }
 
