@@ -61,6 +61,8 @@ const SearchEmployees = () => {
 
   return (
     <>
+      <ProgressBar />
+      <AlertMessage />
       <Box mt={5} >
         <Box display={"flex"} justifyContent={"space-evenly"} >
           <Form
@@ -92,8 +94,6 @@ const SearchEmployees = () => {
             )}
           />
         </Box>
-        <ProgressBar />
-        <AlertMessage />
 
         <Grid container spacing={2} >
           {
