@@ -3,15 +3,9 @@
 
 html , body {
   height: 100%;
+  font-family: "Josefin Sans";
 }
 
-
-
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
 #root {
   height: 100%;
 }
@@ -36,15 +30,6 @@ code {
   --product-description-background: #F9F8FE;
 }
 
-.slick-dots li button:before {
-  font-size: 10px;
-  background-color: var(--pink);
-  height: 10px;
-  width: 10px;
-  text-indent: -9999px;
-  overflow:hidden;
-  transform: rotate(45deg);
-}
 .MuiCard-root:hover {
   background-color: "brown";
 }

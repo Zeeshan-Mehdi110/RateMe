@@ -9,7 +9,7 @@ const Header = () => {
 
 
   return (
-    <AppBar color="primary" position="sticky" >
+    <AppBar color="primary" position="sticky" sx={{ "width": "100%" }} >
       <Toolbar>
         <Box display={"flex"} alignItems={"center"} >
           <Link to="/" style={{ color: "white", "marginRight": "10px" }}>
@@ -22,7 +22,7 @@ const Header = () => {
             sx={{
               mr: 2,
               display: 'flex',
-              fontFamily: 'monospace',
+              fontFamily: 'Josefin Sans',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
@@ -37,8 +37,8 @@ const Header = () => {
         </Box>
         <Box display="flex">
           <Tabs onChange={(e, val) => setValue(val)} value={value} textColor="#FFFFFF">
-            <Tab component={Link} to="/" label="Home" />
-            <Tab component={Link} to="/admin/signin" label="Admin" />
+            <Tab component={Link} to="/" label="Home" sx={{ "fontFamily": "Josefin Sans" }} />
+            <Tab component={Link} to="/admin/signin" label="Admin" sx={{ "fontFamily": "Josefin Sans" }} />
           </Tabs>
         </Box>
       </Toolbar>

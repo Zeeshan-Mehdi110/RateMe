@@ -33,19 +33,19 @@ const About = () => {
               Features
             </Typography>
             <Typography component="ul" sx={{ 'color': '#FB2E86', "textAlign": "justify", 'fontFamily': 'Lato', 'fontStyle': 'normal', 'fontWeight': '700', 'fontSize': '16px', 'lineHeight': '28px' }}>
-              <Typography component="li" >
+              <Typography component="li" fontFamily="Josefin Sans" >
                 Public can give feedback by scanning a QR code.
               </Typography>
-              <Typography component="li" >
+              <Typography component="li" fontFamily="Josefin Sans" >
                 Feedback is stored in a database for analysis.
               </Typography>
-              <Typography component="li" >
+              <Typography component="li" fontFamily="Josefin Sans" >
                 Public can also give rating to employees.
               </Typography>
-              <Typography component="li">
-                Admins can add new employee and Departments.
+              <Typography component="li" fontFamily="Josefin Sans">
+                Admins can add , edit and delete new employee and Departments.
               </Typography>
-              <Typography component="li">
+              <Typography component="li" fontFamily="Josefin Sans">
                 Admins and employees List is also availble with pagination.
               </Typography>
             </Typography>

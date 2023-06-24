@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import Header from '../library/Header';
 import SearchEmployees from './SearchEmployees';
 import About from './About';
+import Footer from '../library/Footer';
 
 export default function Home() {
 
@@ -11,6 +12,7 @@ export default function Home() {
       <Header />
       <SearchEmployees />
       <About />
+      <Footer />
     </Box>
   )
 

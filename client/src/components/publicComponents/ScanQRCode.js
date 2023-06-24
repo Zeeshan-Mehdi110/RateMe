@@ -36,7 +36,7 @@ const ScanQRCode = ({ employeeId, name }) => {
   }
   return (
     <>
-      <Button sx={{ mx: 2 }} variant="contained" onClick={scanQRCode} color="primary" startIcon={<QrCodeIcon />} >Scan QR Code</Button>
+      <Button sx={{ mx: 2, fontFamily: "Josefin Sans" }} variant="contained" onClick={scanQRCode} color="primary" startIcon={<QrCodeIcon />} >Scan QR Code</Button>
       <Dialog open={open} onClose={handleClose} >
         <DialogTitle>
           Scan Employee QR Code
