@@ -65,7 +65,7 @@ const AppBar = () => {
               <Button
                 component={Link}
                 to="/admin/departments"
-                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 }, ml: 1 }}
+                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 10, md: 14 }, ml: 1 }}
               >
                 Departments
               </Button>
@@ -74,12 +74,12 @@ const AppBar = () => {
               <Button
                 LinkComponent={Link}
                 to={`/admin/employees/${user.departmentId}`}
-                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 }, ml: 1 }}
+                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 11, md: 14 }, ml: 1 }}
               >
                 Employees
               </Button>
             )}
-            <Button component={Link} to="/admin/users" sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 } }}>
+            <Button component={Link} to="/admin/users" sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 11, md: 14 } }}>
               Users
             </Button>
           </Box>
