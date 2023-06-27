@@ -23,8 +23,7 @@ const Header = () => {
               mr: 2,
               display: 'flex',
               fontFamily: 'Josefin Sans',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontWeight: 600,
               color: 'inherit',
               textDecoration: 'none'
             }}

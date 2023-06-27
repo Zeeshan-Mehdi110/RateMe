@@ -52,36 +52,34 @@ const AppBar = () => {
               mr: { xs: 0, md: 2 },
               display: 'flex',
               fontFamily: 'Josefin Sans',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontWeight: 600,
               color: 'inherit',
               textDecoration: 'none'
             }}
           >
             RateMe
           </Typography>
-          <Box flexGrow={1} textAlign={'right'} p={0} >
+          <Box flexGrow={1} display={{ xs: "none", md: "block" }} ></Box>
+          <Box flexGrow={{ xs: 1, md: 0 }} textAlign={'center'}>
             {userType === userTypes.USER_TYPE_SUPER && (
-              <>
-                <Button
-                  component={Link}
-                  to="/admin/departments"
-                  sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}
-                >
-                  Departments
-                </Button>
-              </>
+              <Button
+                component={Link}
+                to="/admin/departments"
+                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 }, ml: 1 }}
+              >
+                Departments
+              </Button>
             )}
             {userType === userTypes.USER_TYPE_STANDARD && (
               <Button
                 LinkComponent={Link}
                 to={`/admin/employees/${user.departmentId}`}
-                sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}
+                sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 }, ml: 1 }}
               >
                 Employees
               </Button>
             )}
-            <Button component={Link} to="/admin/users" sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}>
+            <Button component={Link} to="/admin/users" sx={{ color: 'white', "padding": { xs: 0, md: 2 }, "fontSize": { xs: 12, md: 14 } }}>
               Users
             </Button>
           </Box>
