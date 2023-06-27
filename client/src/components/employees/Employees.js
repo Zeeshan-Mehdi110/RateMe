@@ -58,13 +58,13 @@ function Employees() {
   }, [page]);
   if (!department) return null
   return (
-    <Box>
-      <Box display='flex' justifyContent='space-between'>
-        <Typography variant='h5'>{department.name}-Employees</Typography>
-        <Rating value={department.rating} readOnly />
-        <Box>
-          <Button component={Link} to={`/admin/departments/edit/${deptId}`} variant='outlined' sx={{ mr: 1 }} startIcon={<EditIcon />}> Edit Department</Button>
-          <Button component={Link} to={`/admin/employees/add/${deptId}`} variant='outlined' startIcon={<AddIcon />}> Add Employees</Button>
+    <Box overflow="auto" >
+      <Box display='flex' justifyContent='space-between' alignItems={"center"} >
+        <Typography sx={{ fontSize: { xs: "12px", md: "24px" } }} fontWeight="bold" fontFamily="Josefin Sans" >{department.name}-Employees</Typography>
+        <Rating sx={{ "fontSize": { xs: "10px", md: "28px" } }} value={department.rating} readOnly />
+        <Box display={{ xs: "flex", md: "block" }} >
+          <Button component={Link} to={`/admin/departments/edit/${deptId}`} variant='outlined' sx={{ fontSize: { xs: "7px", md: "14px" }, mr: 1 }} startIcon={<EditIcon />}> Edit Department</Button>
+          <Button component={Link} to={`/admin/employees/add/${deptId}`} variant='outlined' sx={{ fontSize: { xs: "7px", md: "14px" } }} startIcon={<AddIcon />}> Add Employees</Button>
         </Box>
       </Box>
       <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} mt={2} >
@@ -104,7 +104,7 @@ function Employees() {
                 </TableCell>
                 <TableCell>{employee.phone}</TableCell>
                 <TableCell>{employee.cnic}</TableCell>
-                <TableCell>
+                <TableCell sx={{ display: { xs: "flex", flexDirection: "row" } }} >
                   <IconButton component={Link} to={`/admin/employees/edit/${employee._id}`}> <EditIcon /> </IconButton>
                   <DeleteEmployee employeeId={employee._id} name={employee.name} deleteEmployee={deleteEmployee} />
                   <EmployeeQRCode name={employee.name} employeeId={employee._id} />

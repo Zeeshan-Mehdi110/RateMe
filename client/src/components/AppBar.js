@@ -41,16 +41,17 @@ const AppBar = () => {
 
   return (
     <MuiAppBar>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" disableGutters >
         <Toolbar>
-          <StarsIcon sx={{ display: 'flex', mr: 1 }} />
+          <StarsIcon sx={{ display: 'flex', mr: { xs: 1, md: 2 } }} />
           <Typography
             variant="h6"
             component={Link}
+            to={"/admin/dashboard"}
             sx={{
-              mr: 2,
+              mr: { xs: 0, md: 2 },
               display: 'flex',
-              fontFamily: 'monospace',
+              fontFamily: 'Josefin Sans',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
@@ -59,13 +60,13 @@ const AppBar = () => {
           >
             RateMe
           </Typography>
-          <Box flexGrow={1} textAlign={'right'}>
+          <Box flexGrow={1} textAlign={'right'} p={0} >
             {userType === userTypes.USER_TYPE_SUPER && (
               <>
                 <Button
                   component={Link}
                   to="/admin/departments"
-                  sx={{ color: 'white' }}
+                  sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}
                 >
                   Departments
                 </Button>
@@ -75,18 +76,18 @@ const AppBar = () => {
               <Button
                 LinkComponent={Link}
                 to={`/admin/employees/${user.departmentId}`}
-                sx={{ color: 'white' }}
+                sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}
               >
                 Employees
               </Button>
             )}
-            <Button component={Link} to="/admin/users" sx={{ color: 'white' }}>
+            <Button component={Link} to="/admin/users" sx={{ color: 'white', "padding": { xs: 0, md: 2 } }}>
               Users
             </Button>
           </Box>
           <Box>
             <Tooltip title="Open Settings">
-              <IconButton onClick={openMenu}>
+              <IconButton onClick={openMenu} sx={{ "padding": { xs: 0, md: "auto" } }} >
                 <Avatar sx={{ "width": "32px", "height": "32px" }} alt="Profile Picture" src={user?.profilePicture} />
               </IconButton>
             </Tooltip>

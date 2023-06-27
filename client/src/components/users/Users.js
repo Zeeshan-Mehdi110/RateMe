@@ -26,21 +26,22 @@ function Users({ users, loadUsers, loggedInUserType }) {
     if (users.length === 0) loadUsers()
   }, [])
   return (
-    <Box>
+    <Box overflow={'auto'} >
       <Box display="flex" justifyContent="space-between">
-        <Typography variant="h5">Users</Typography>
+        <Typography sx={{ fontSize: { xs: "20px", md: "30px" } }} fontWeight="bold" fontFamily="Josefin Sans">Users</Typography>
         <Box>
           <Button
             component={Link}
             to="/admin/users/add"
             variant="outlined"
             startIcon={<AddIcon />}
+            sx={{ fontSize: { xs: "10px", md: "16px" } }}
           >
             {' '}
             Add
           </Button>
           <Button
-            sx={{ ml: 1 }}
+            sx={{ fontSize: { xs: "10px", md: "16px" }, ml: 1 }}
             onClick={loadUsers}
             variant="outlined"
             endIcon={<RefreshIcon />}
@@ -79,7 +80,7 @@ function Users({ users, loadUsers, loggedInUserType }) {
                   </TableCell>
                 </>
               }
-              <TableCell>
+              <TableCell sx={{ display: { xs: "flex", flexDirection: "row" } }} >
                 <IconButton
                   component={Link}
                   to={`/admin/users/edit/${user._id}`}

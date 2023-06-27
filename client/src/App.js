@@ -52,19 +52,18 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
   if (!user) return <AppPublic />
 
   return (
-    <div>
+    <>
       <AppBar />
       <AlertMessage />
       <Container
         sx={{
           mt: 10,
-          p: 3,
+          p: { xs: 2, md: 3 },
           backgroundColor: '#fff',
           borderRadius: '5px',
           boxShadow: '0px 0px 17px 5px #dbdada',
           position: 'relative'
         }}
-        maxWidth="lg"
       >
         <BlockInterface />
         <Routes>
@@ -93,7 +92,7 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
           <Route path='*' Component={NoFound404} />
         </Routes>
       </Container>
-    </div>
+    </>
   )
 }
 
