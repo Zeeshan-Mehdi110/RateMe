@@ -56,7 +56,12 @@ const SignIn = () => {
           {(props) => {
             const { invalid, submitting } = props
             return (
-              <form onSubmit={props.handleSubmit}>
+              <form 
+              initialValues={{
+            email : "admin@gmail.com",
+            password : "123456"
+            }}
+              onSubmit={props.handleSubmit}>
                 <Field
                   name="email"
                   type="email"
